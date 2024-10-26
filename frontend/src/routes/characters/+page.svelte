@@ -30,7 +30,9 @@
 			<a href="/characters/{character.CharacterID}" class="card">
 				<h2>{character.Name}</h2>
 				{#if character.Title}
+					<p>{character.Name}</p>
 					<p>{character.Title}</p>
+					<img src={character.ImageURL} alt={character.Name} class="w-max h-auto" />|
 				{/if}
 			</a>
 		{/each}

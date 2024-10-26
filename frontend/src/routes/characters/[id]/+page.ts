@@ -1,5 +1,3 @@
-import type { Load } from '@sveltejs/kit';
-
 import type { LoadEvent } from '@sveltejs/kit';
 
 export const load = async ({ params, fetch }: LoadEvent) => {

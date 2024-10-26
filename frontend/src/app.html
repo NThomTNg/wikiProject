@@ -2,11 +2,12 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<link rel="icon" href="/misc/logo.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="hover">
+	<body class="bg-cover bg-center bg-no-repeat" style="background-image: url('/bglandscape.jpg')">
+		<div class="absolute inset-0 bg-black opacity-50"></div>
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
