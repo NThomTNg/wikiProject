@@ -21,33 +21,29 @@
 </script>
 
 {#if loading}
-	<p>Loading...</p>
+	<p class="text-center text-gray-500">Loading...</p>
 {:else if error}
-	<p class="error">{error}</p>
+	<p class="text-center text-red-500">{error}</p>
 {:else}
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 		{#each characters as character}
-			<a href="/characters/{character.CharacterID}" class="card">
-				<h2>{character.Name}</h2>
+			<a
+				href="/characters/{character.CharacterID}"
+				class="block p-4 border rounded-lg shadow hover:shadow-lg transition-shadow duration-200"
+			>
+				<h2 class="text-xl font-semibold mb-2">{character.Name}</h2>
 				{#if character.Title}
-					<p>{character.Name}</p>
-					<p>{character.Title}</p>
-					<img src={character.ImageURL} alt={character.Name} class="w-max h-auto" />|
+					<p class="text-gray-700">{character.Title}</p>
+					<img src={character.ImageURL} alt={character.Name} class="w-full h-auto mt-2 rounded" />
 				{/if}
 			</a>
 		{/each}
 	</div>
+	<div>
+		<a href="./characters/new">
+			<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+				New Character
+			</button>
+		</a>
+	</div>
 {/if}
-
-<style>
-	.card {
-		border: 1px solid #ddd;
-		padding: 1rem;
-		border-radius: 0.5rem;
-		transition: transform 0.2s;
-	}
-
-	.card:hover {
-		transform: translateY(-2px);
-	}
-</style>

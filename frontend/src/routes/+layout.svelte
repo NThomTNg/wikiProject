@@ -22,19 +22,31 @@
 			<img src="/misc/logo.png" alt="logo" class="h-auto w-36 ml-12" />
 			<div class="flex-1 px-2 py-4">
 				<div class="space-y-1 flex flex-col items-center">
-					<a href="/characters" class="block text-lg text-white px-3 py-2 hover:text-green-700"
+					<a
+						href="/characters"
+						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-green-700 after:transition-all after:duration-300 hover:after:w-full"
 						>Characters</a
 					>
-					<a href="/nations" class="block text-lg text-white px-3 py-2 hover:text-green-700"
-						>Nations</a
+					<a
+						href="/nations"
+						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-green-700 after:transition-all after:duration-300 hover:after:w-full"
 					>
-					<a href="/locations" class="block text-lg text-white px-3 py-2 hover:text-green-700"
-						>Locations</a
+						Nations
+					</a>
+					<a
+						href="/locations"
+						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-green-700 after:transition-all after:duration-300 hover:after:w-full"
 					>
-					<a href="/religions" class="block text-lg text-white px-3 py-2 hover:text-green-700"
+						Locations
+					</a>
+					<a
+						href="/religions"
+						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-green-700 after:transition-all after:duration-300 hover:after:w-full"
 						>Religions</a
 					>
-					<a href="/events" class="block text-lg text-white px-3 py-2 hover:text-green-700"
+					<a
+						href="/events"
+						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-green-700 after:transition-all after:duration-300 hover:after:w-full"
 						>Events</a
 					>
 				</div>
