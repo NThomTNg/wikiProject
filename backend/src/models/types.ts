@@ -20,6 +20,17 @@ export interface CharacterWithRelations extends Character {
 export interface Nation {
   NationID: number;
   Name: string;
+  Government?: string | null;
+  CapitalLocationID?: number | null;
+  Description?: string | null;
+  FoundingDate?: string | null;
+  MajorReligionID?: number | null;
+  Culture?: string | null;
+  Economy?: string | null;
+  MilitaryStrength?: string | null;
+  CreatedDate: Date;
+  LastModifiedDate: Date;
+  ImageURL?: string | null;
 }
 
 export interface Religion {
