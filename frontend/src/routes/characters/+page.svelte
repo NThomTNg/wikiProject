@@ -29,19 +29,19 @@
 		{#each characters as character}
 			<a
 				href="/characters/{character.CharacterID}"
-				class="block p-4 border rounded-lg shadow hover:shadow-lg transition-shadow duration-200"
+				class="block bg-slate-700 bg-opacity-80 border-slate-800 border p-4 rounded-lg shadow hover:shadow-2xl transition-shadow duration-200"
 			>
-				<h2 class="text-xl font-semibold mb-2">{character.Name}</h2>
+				<h2 class="text-xl font-semibold mb-2 text-white text-center">{character.Name}</h2>
 				{#if character.Title}
-					<p class="text-gray-700">{character.Title}</p>
-					<img src={character.ImageURL} alt={character.Name} class="w-full h-auto mt-2 rounded" />
+					<p class="text-white text-center mb-4">{character.Title}</p>
+					<img src={character.ImageURL} alt={character.Name} class="w-full h-auto rounded mb-2" />
 				{/if}
 			</a>
 		{/each}
 	</div>
 	<div>
 		<a href="./characters/new">
-			<button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+			<button class="bg-sky-700 hover:bg-sky-600 text-white font-bold py-2 mt-5 px-4 rounded">
 				New Character
 			</button>
 		</a>

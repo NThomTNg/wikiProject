@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	import type { Character } from '$lib/types';
 
 	let characters: Character[] = [];
@@ -60,7 +61,7 @@
 			deathDate = '';
 			nationID = null;
 			religionID = null;
-			imageFile = null; // Reset the image file
+			imageFile = null;
 			await fetchCharacters();
 		} else {
 			alert('Failed to add character');
@@ -70,7 +71,7 @@
 	const handleFileUpload = (event: Event) => {
 		const target = event.target as HTMLInputElement;
 		if (target.files) {
-			imageFile = target.files[0]; // Store the selected file
+			imageFile = target.files[0];
 		}
 	};
 </script>
@@ -81,64 +82,82 @@
 	<p class="text-center text-red-500">{error}</p>
 {:else}
 	<div class="mb-6">
-		<a href="/characters" class="text-blue-500 hover:underline">← Back to characters</a>
+		<button
+			on:click={() => goto('/characters')}
+			class="text-white bg-sky-700 p-2 rounded hover:bg-sky-600 hover:shadow-lg"
+		>
+			← Back to characters
+		</button>
 	</div>
 	<form
 		on:submit|preventDefault={addCharacter}
-		class="mb-4 space-y-4 max-w-lg mx-auto p-4 border rounded-lg shadow-md"
+		class="mb-4 space-y-6 max-w-lg mx-auto p-5 border rounded-lg shadow-md bg-slate-700 bg-opacity-80 border-slate-800"
 	>
-		<input
-			type="text"
-			bind:value={name}
-			placeholder="Name"
-			required
-			class="input w-full p-2 border rounded"
-		/>
-		<input
-			type="text"
-			bind:value={title}
-			placeholder="Title"
-			class="input w-full p-2 border rounded"
-		/>
-		<textarea
-			bind:value={biography}
-			placeholder="Biography"
-			class="textarea w-full p-2 border rounded"
-		></textarea>
-		<input
-			type="text"
-			bind:value={birthDate}
-			placeholder="Birth Date"
-			class="input w-full p-2 border rounded"
-		/>
-		<input
-			type="text"
-			bind:value={deathDate}
-			placeholder="Death Date"
-			class="input w-full p-2 border rounded"
-		/>
-		<input
-			type="number"
-			bind:value={nationID}
-			placeholder="Nation ID"
-			class="input w-full p-2 border rounded"
-		/>
-		<input
-			type="number"
-			bind:value={religionID}
-			placeholder="Religion ID"
-			class="input w-full p-2 border rounded"
-		/>
-		<input
-			type="file"
-			accept="image/*"
-			on:change={handleFileUpload}
-			class="input w-full p-2 border rounded"
-		/>
-		<button
-			type="submit"
-			class="button w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-		>
+		<div class="mb-4">
+			<input
+				type="text"
+				bind:value={name}
+				placeholder="Name"
+				required
+				class="input w-full p-2 border rounded"
+			/>
+		</div>
+		<div class="mb-4">
+			<input
+				type="text"
+				bind:value={title}
+				placeholder="Title"
+				class="input w-full p-2 border rounded"
+			/>
+		</div>
+		<div class="mb-4">
+			<textarea
+				bind:value={biography}
+				placeholder="Biography"
+				class="textarea w-full p-2 border rounded"
+			></textarea>
+		</div>
+		<div class="mb-4">
+			<input
+				type="text"
+				bind:value={birthDate}
+				placeholder="Birth Date"
+				class="input w-full p-2 border rounded"
+			/>
+		</div>
+		<div class="mb-4">
+			<input
+				type="text"
+				bind:value={deathDate}
+				placeholder="Death Date"
+				class="input w-full p-2 border rounded"
+			/>
+		</div>
+		<div class="mb-4">
+			<input
+				type="number"
+				bind:value={nationID}
+				placeholder="Nation ID"
+				class="input w-full p-2 border rounded"
+			/>
+		</div>
+		<div class="mb-4">
+			<input
+				type="number"
+				bind:value={religionID}
+				placeholder="Religion ID"
+				class="input w-full p-2 border rounded"
+			/>
+		</div>
+		<div class="mb-4">
+			<input
+				type="file"
+				accept="image/*"
+				on:change={handleFileUpload}
+				class="input w-full p-2 border rounded"
+			/>
+		</div>
+		<button type="submit" class="button w-full p-2 bg-sky-700 text-white rounded hover:bg-sky-600">
 			Add Character
 		</button>
 	</form>

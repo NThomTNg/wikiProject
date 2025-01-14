@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { Character } from '$lib/types';
+	import { goto } from '$app/navigation';
+
 	export let data: { character?: Character; error?: string };
 
 	function formatDate(date?: string): string {
@@ -45,12 +47,16 @@
 {#if data.error}
 	<div class="text-center">
 		<p class="text-red-600">{data.error}</p>
-		<a href="/characters" class="text-blue-500 hover:underline">← Back to characters</a>
 	</div>
 {:else if data.character}
 	<div class="mx-auto p-4">
 		<div class="mb-6">
-			<a href="/characters" class="text-blue-500 hover:underline">← Back to characters</a>
+			<button
+				on:click={() => goto('/characters')}
+				class="text-white bg-sky-700 p-2 rounded hover:bg-sky-600 hover:shadow-lg"
+			>
+				← Back to characters
+			</button>
 		</div>
 
 		<div class="grid md:grid-cols-2 gap-8">
@@ -115,7 +121,7 @@
 				</div>
 				<button
 					on:click={deleteCharacter}
-					class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+					class="mt-4 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-600"
 				>
 					Delete Character
 				</button>

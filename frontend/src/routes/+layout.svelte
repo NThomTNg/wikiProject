@@ -24,29 +24,29 @@
 				<div class="space-y-1 flex flex-col items-center">
 					<a
 						href="/characters"
-						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-green-700 after:transition-all after:duration-300 hover:after:w-full"
+						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-sky-500 after:transition-all after:duration-300 hover:after:w-full"
 						>Characters</a
 					>
 					<a
 						href="/nations"
-						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-green-700 after:transition-all after:duration-300 hover:after:w-full"
+						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-sky-500 after:transition-all after:duration-300 hover:after:w-full"
 					>
 						Nations
 					</a>
 					<a
 						href="/locations"
-						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-green-700 after:transition-all after:duration-300 hover:after:w-full"
+						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-sky-500 after:transition-all after:duration-300 hover:after:w-full"
 					>
 						Locations
 					</a>
 					<a
 						href="/religions"
-						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-green-700 after:transition-all after:duration-300 hover:after:w-full"
+						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-sky-500 after:transition-all after:duration-300 hover:after:w-full"
 						>Religions</a
 					>
 					<a
 						href="/events"
-						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-green-700 after:transition-all after:duration-300 hover:after:w-full"
+						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-sky-500 after:transition-all after:duration-300 hover:after:w-full"
 						>Events</a
 					>
 				</div>
