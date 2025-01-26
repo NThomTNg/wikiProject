@@ -5,7 +5,7 @@
 			title: 'Nations'
 		},
 		{
-			Image: '/locations/2L.png',
+			Image: '/locations/4L.png',
 			title: 'Cities'
 		},
 		{
@@ -13,7 +13,7 @@
 			title: 'Characters'
 		},
 		{
-			Image: '/characters/2C.png',
+			Image: '/characters/6C.png',
 			title: 'Religions'
 		},
 		{
@@ -40,8 +40,16 @@
 			class="relative rounded-lg overflow-hidden shadow-lg transition-transform transform hover:-translate-y-1 hover:scale-110 hover:shadow-lg hover:shadow-blue-400/30"
 		>
 			<a
-				href={title === 'Characters' ? '/characters' : title === 'Nations' ? '/nations' : Image}
-				target={title === 'Characters' || title === 'Nations' ? '_self' : '_blank'}
+				href={title === 'Characters'
+					? '/characters'
+					: title === 'Nations'
+						? '/nations'
+						: title === 'Locations'
+							? '/locations'
+							: Image}
+				target={title === 'Characters' || title === 'Nations' || title === 'Locations'
+					? '_self'
+					: '_blank'}
 				class="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group"
 			>
 				<img

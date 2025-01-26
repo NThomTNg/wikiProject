@@ -33,6 +33,20 @@ export interface Nation {
   ImageURL?: string | null;
 }
 
+export interface Location {
+  LocationID: number;
+  Name: string;
+  LocationType: string;
+  Description?: string | null;
+  NationID?: number | null;
+  CoordinateX?: number | null;
+  CoordinateY?: number | null;
+  Climate?: string | null;
+  Population?: number | null;
+  CreatedDate: Date;
+  LastModifiedDate: Date;
+}
+
 export interface Religion {
   ReligionID: number;
   Name: string;
@@ -55,4 +69,5 @@ export interface CharacterTag {
 export interface CharacterFormData {
   nations: Nation[];
   religions: Religion[];
+  locations: Location[];
 }

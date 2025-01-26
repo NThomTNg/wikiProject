@@ -49,6 +49,11 @@
 						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-sky-500 after:transition-all after:duration-300 hover:after:w-full"
 						>Events</a
 					>
+					<a
+						href="/"
+						class="block text-lg text-white px-3 py-2 relative after:block after:w-0 after:h-0.5 after:bg-sky-500 after:transition-all after:duration-300 hover:after:w-full"
+						>History</a
+					>
 				</div>
 			</div>
 		</div>

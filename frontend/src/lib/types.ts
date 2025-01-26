@@ -1,15 +1,48 @@
-export interface Nations {
+export interface Nation {
     NationID: number;
     Name: string;
-    Government: string | null;
-    CapitalLocationID: number | null;
-    Description: string | null;
-    FoundingDate: string | null;
-    MajorReligionID: number | null;
-    Culture: string | null;
-    Economy: string | null;
-    MilitaryStrength: string | null;
+    Government: string;
+    CapitalLocationID: number;
+    Description: string;
+    FoundingDate: string;
+    MajorReligionID: number;
+    Culture: string;
+    Economy: string;
+    MilitaryStrength: string;
     CreatedDate: string;
     LastModifiedDate: string;
-    ImageURL: string | null;
+    ImageURL: string;
 }
+export interface Location {
+    LocationID: number;
+    Name: string;
+    LocationType: string;
+    Description: string;
+    NationID: number;
+    CoordinateX: number;
+    CoordinateY: number;
+    Climate: string;
+    Population: number;
+    CreatedDate: string;
+    LastModifiedDate: string;
+}
+
+export interface LocationWithRelations extends Location {
+    NationName?: string | null;
+}
+
+export interface Character {
+    CharacterID: number;
+    Name: string;
+    Title?: string | null;
+    Biography?: string | null;
+    BirthDate?: string | null;
+    DeathDate?: string | null;
+    NationID?: number | null;
+    ReligionID?: number | null;
+    ImageURL?: string | null;
+    CreatedDate: Date;
+    LastModifiedDate: Date;
+  }
+
+

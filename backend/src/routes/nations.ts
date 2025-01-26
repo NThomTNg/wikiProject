@@ -8,7 +8,6 @@ import {
 
 const router = express.Router();
 
-// Basic routes without multer for now
 router.get('/', getNations);
 router.get('/:id', getNationById);
 router.post('/', addNation);
