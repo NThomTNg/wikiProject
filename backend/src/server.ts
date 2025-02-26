@@ -3,6 +3,7 @@ import cors from 'cors';
 import characterRoutes from './routes/characters';
 import nationRoutes from './routes/nations';
 import locationRoutes from './routes/locations';
+import religionRoutes from './routes/religions';
 import path from 'path';
 import fs from 'fs';
 
@@ -33,6 +34,7 @@ app.use('/uploads', express.static(uploadDir));
 app.use('/api/characters', characterRoutes);
 app.use('/api/nations', nationRoutes);  
 app.use('/api/locations' , locationRoutes);
+app.use('/api/religions', religionRoutes);
 
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error('Error:', err);

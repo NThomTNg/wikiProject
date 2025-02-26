@@ -6,7 +6,7 @@
 		},
 		{
 			Image: '/locations/4L.png',
-			title: 'Cities'
+			title: 'Stories'
 		},
 		{
 			Image: '/characters/1C.png',
@@ -46,8 +46,13 @@
 						? '/nations'
 						: title === 'Locations'
 							? '/locations'
-							: Image}
-				target={title === 'Characters' || title === 'Nations' || title === 'Locations'
+							: title === 'Religions'
+								? '/religions'
+								: Image}
+				target={title === 'Characters' ||
+				title === 'Nations' ||
+				title === 'Locations' ||
+				title === 'Religions'
 					? '_self'
 					: '_blank'}
 				class="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group"

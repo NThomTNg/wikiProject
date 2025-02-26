@@ -45,4 +45,16 @@ export interface Character {
     LastModifiedDate: Date;
   }
 
-
+  export interface Religion {
+    ReligionID: number;
+    Name: string;
+    Description?: string | null;
+    Deities?: string | null;
+    HolyText?: string | null;
+    Practices?: string | null;
+    FoundingDate?: string | null;
+    Hierarchy?: string | null;
+    CreatedDate: Date;
+    LastModifiedDate: Date;
+    ImageURL?: string | null;
+  }
