@@ -29,7 +29,8 @@
 		{#each religions as religion}
 			<a
 				href={`/religions/${religion.ReligionID}`}
-				class="block bg-slate-700 bg-opacity-80 border-slate-800 border p-4 rounded-lg shadow hover:shadow-2xl transition-shadow duration-200"
+				class="block bg-slate-700 bg-opacity-80 border-slate-800 border p-4 rounded-lg shadow
+				overflow-hidden hover:shadow-xl transition-all duration-300 hover:bg-slate-800 transform hover:-translate-y-1 cursor-pointer"
 			>
 				<h2 class="text-xl font-semibold mb-2 text-white text-center">{religion.Name}</h2>
 

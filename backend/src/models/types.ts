@@ -80,3 +80,19 @@ export interface CharacterFormData {
   religions: Religion[];
   locations: Location[];
 }
+
+export interface Event {
+  EventID: number;
+  Title: string;
+  Description?: string | null;
+  EventDate?: string | null;
+  LocationID?: number | null;
+  NationID?: number | null;
+  CreatedDate: Date;
+  LastModifiedDate: Date;
+}
+
+export interface EventWithRelations extends Event {
+  LocationName?: string | null;
+  NationName?: string | null;
+}

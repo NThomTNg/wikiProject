@@ -4,6 +4,7 @@ import characterRoutes from './routes/characters';
 import nationRoutes from './routes/nations';
 import locationRoutes from './routes/locations';
 import religionRoutes from './routes/religions';
+import eventRoutes from './routes/events';
 import path from 'path';
 import fs from 'fs';
 
@@ -16,7 +17,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: 'http://localhost:5173',  
+  origin: ['http://localhost:5173'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204
@@ -35,6 +36,7 @@ app.use('/api/characters', characterRoutes);
 app.use('/api/nations', nationRoutes);  
 app.use('/api/locations' , locationRoutes);
 app.use('/api/religions', religionRoutes);
+app.use('/api/events', eventRoutes);
 
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error('Error:', err);

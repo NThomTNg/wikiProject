@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
 	import type { Religion } from '$lib/types';
 
 	export let data: { religions: Religion[] };
 
-	// Form data
 	let name = '';
 	let description = '';
 	let deities = '';
@@ -20,7 +18,6 @@
 	let success = '';
 	let loading = false;
 
-	// For image preview
 	let imagePreview: string | null = null;
 
 	function handleImageChange(event: Event) {
@@ -99,10 +96,6 @@
 		error = '';
 		success = '';
 	}
-
-	onMount(() => {
-		// Any initialization code can go here
-	});
 </script>
 
 {#if loading}

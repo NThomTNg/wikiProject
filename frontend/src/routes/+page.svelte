@@ -6,7 +6,7 @@
 		},
 		{
 			Image: '/locations/4L.png',
-			title: 'Stories'
+			title: 'Events'
 		},
 		{
 			Image: '/characters/1C.png',
@@ -48,11 +48,14 @@
 							? '/locations'
 							: title === 'Religions'
 								? '/religions'
-								: Image}
+								: title === 'Events'
+									? '/events'
+									: Image}
 				target={title === 'Characters' ||
 				title === 'Nations' ||
 				title === 'Locations' ||
-				title === 'Religions'
+				title === 'Religions' ||
+				title === 'Events'
 					? '_self'
 					: '_blank'}
 				class="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group"
