@@ -4,7 +4,7 @@
 
 	export let data: { character?: Character; error?: string };
 
-	function formatDate(date?: string): string {
+	function formatDate(date?: string | null): string {
 		if (!date) return 'Unknown';
 		return new Date(date).toLocaleDateString('en-US', {
 			year: 'numeric',
@@ -86,11 +86,11 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<span class="text-gray-600 dark:text-gray-400">Birth:</span>
-								<span class="ml-2">{formatDate(data.character.BirthDate)}</span>
+								<span class="ml-2 text-white">{formatDate(data.character.BirthDate)}</span>
 							</div>
 							<div>
 								<span class="text-gray-600 dark:text-gray-400">Death:</span>
-								<span class="ml-2">{formatDate(data.character.DeathDate)}</span>
+								<span class="ml-2 text-white">{formatDate(data.character.DeathDate)}</span>
 							</div>
 						</div>
 					</div>

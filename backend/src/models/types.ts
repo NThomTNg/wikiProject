@@ -96,3 +96,30 @@ export interface EventWithRelations extends Event {
   LocationName?: string | null;
   NationName?: string | null;
 }
+
+export interface HistoryEntry {
+  HistoryID: number;
+  Title: string;
+  Content?: string | null;
+  TimelinePeriod?: string | null;
+  StartYear?: number | null;
+  EndYear?: number | null;
+  Category?: string | null;
+  NationID?: number | null;
+  CharacterID?: number | null;
+  EventID?: number | null;
+  LocationID?: number | null;
+  ReligionID?: number | null;
+  SortOrder?: number;
+  CreatedDate: Date;
+  LastModifiedDate: Date;
+  ImageURL?: string | null;
+}
+
+export interface HistoryEntryWithRelations extends HistoryEntry {
+  NationName?: string | null;
+  CharacterName?: string | null;
+  EventTitle?: string | null;
+  LocationName?: string | null;
+  ReligionName?: string | null;
+}

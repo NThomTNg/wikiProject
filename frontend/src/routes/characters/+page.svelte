@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Character } from '$lib/types';
+	import ItemBox from '$lib/components/ItemBox.svelte';
+	import GridLayout from '$lib/components/GridLayout.svelte';
 
 	let characters: Character[] = [];
 	let loading = true;
@@ -25,26 +27,25 @@
 {:else if error}
 	<p class="text-center text-red-500">{error}</p>
 {:else}
-	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-		{#each characters as character}
-			<a
-				href={`/characters/${character.CharacterID}`}
-				class="block bg-slate-700 bg-opacity-80 border-slate-800 border p-4 rounded-lg shadow
-				overflow-hidden hover:shadow-xl transition-all duration-300 hover:bg-slate-800 transform hover:-translate-y-1 cursor-pointer"
-			>
-				<h2 class="text-xl font-semibold mb-2 text-white text-center">{character.Name}</h2>
-				{#if character.Title}
-					<p class="text-white text-center mb-4">{character.Title}</p>
-					<img src={character.ImageURL} alt={character.Name} class="w-full h-auto rounded mb-2" />
-				{/if}
-			</a>
-		{/each}
-	</div>
-	<div>
+	<div class="flex justify-end w-full mb-5">
 		<a href="./characters/new">
-			<button class="bg-sky-700 hover:bg-sky-600 text-white font-bold py-2 mt-5 px-4 rounded">
+			<button class="bg-sky-700 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded">
 				New Character
 			</button>
 		</a>
 	</div>
+	<GridLayout>
+		{#each characters as character}
+			<ItemBox
+				href={`/characters/${character.CharacterID}`}
+				title={character.Name}
+				imageUrl={character.ImageURL}
+			>
+				{#if character.Title}
+					<p class="text-white text-center mb-4">{character.Title}</p>
+				{/if}
+			</ItemBox>
+		{/each}
+	</GridLayout>
+	<div></div>
 {/if}

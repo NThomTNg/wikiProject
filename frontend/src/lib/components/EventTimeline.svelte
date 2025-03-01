@@ -29,7 +29,6 @@
 			role="button"
 			aria-label={`View details for event ${event.Title}`}
 		>
-			<!-- Event content -->
 			<div
 				class="{i % 2 === 0 ? 'mr-8' : 'ml-8'} 
                       sm:ml-8 sm:even:mr-8 sm:w-5/12
@@ -37,8 +36,7 @@
                       w-10/1 md:w-5/12"
 			>
 				<div
-					class="bg-slate-800 rounded-lg p-4 cursor-pointer hover:shadow-xl transition-all duration-300
-                         hover:bg-slate-900 transform hover:-translate-y-1"
+					class="bg-slate-800 bg-opacity-40 border border-black rounded-lg p-4 cursor-pointer transition-all duration-300 transform hover:-translate-y-1"
 				>
 					<h2 class="text-xl font-semibold text-white mb-2">{event.Title}</h2>
 
@@ -54,7 +52,6 @@
 						<p class="text-gray-500 italic">No description</p>
 					{/if}
 
-					<!-- Location and Nation info -->
 					<div class="mt-3 flex flex-wrap items-center text-sm">
 						{#if event.NationName}
 							<span class="text-blue-400 mr-2">{event.NationName}</span>
@@ -63,7 +60,7 @@
 							<span class="text-gray-500 mx-1">•</span>
 						{/if}
 						{#if event.LocationName}
-							<span class="text-green-400">{event.LocationName}</span>
+							<span class="text-blue-400">{event.LocationName}</span>
 						{/if}
 					</div>
 				</div>

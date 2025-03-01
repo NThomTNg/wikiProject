@@ -21,8 +21,6 @@
 			}
 			const data = await response.json();
 			events = data.data || data || [];
-
-			// Sort events by date if available
 			events.sort((a, b) => {
 				if (!a.EventDate) return 1;
 				if (!b.EventDate) return -1;
@@ -111,8 +109,7 @@
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 			{#each events as event}
 				<div
-					class="bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-slate-900 transform hover:-translate-y-1 cursor-pointer"
-					on:click={() => viewEvent(event)}
+					class="bg-slate-800 bg-opacity-40 border border-black rounded-lg p-4 cursor-pointer transition-all duration-300 transform hover:-translate-y-1"
 					on:keypress={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') viewEvent(event);
 					}}
@@ -142,7 +139,7 @@
 								<span class="text-gray-500 mx-1">•</span>
 							{/if}
 							{#if event.LocationName}
-								<span class="text-sm text-green-400">{event.LocationName}</span>
+								<span class="text-sm text-blue-400">{event.LocationName}</span>
 							{/if}
 						</div>
 					</div>

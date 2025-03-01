@@ -1,86 +1,45 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import type { Character } from '$lib/types';
+	export let data;
 
-	let characters: Character[] = [];
-	let loading = true;
-	let error: string | null = null;
+	let character = {
+		Name: '',
+		Title: '',
+		Biography: '',
+		NationID: null as number | null,
+		ReligionID: null as number | null,
+		BirthDate: null as string | null,
+		DeathDate: null as string | null,
+		ImageURL: ''
+	};
 
-	let name = '';
-	let title = '';
-	let biography = '';
-	let birthDate = '';
-	let deathDate = '';
-	let nationID: null | number = null;
-	let religionID: null | number = null;
-	let imageFile: File | null = null;
-
-	onMount(async () => {
-		await fetchCharacters();
-	});
-
-	const fetchCharacters = async () => {
+	async function handleSubmit() {
 		try {
-			const response = await fetch('http://localhost:5000/api/characters');
-			if (!response.ok) throw new Error('Failed to fetch characters');
-			const data = await response.json();
-			characters = data.data;
+			const response = await fetch('http://localhost:5000/api/characters', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: 'application/json'
+				},
+				body: JSON.stringify(character)
+			});
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.message || 'Failed to add character');
+			}
+
+			alert('Character added successfully!');
+			goto('/characters');
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'An error occurred';
-		} finally {
-			loading = false;
+			console.error('Error adding character:', err);
+			alert(err instanceof Error ? err.message : 'An unexpected error occurred');
 		}
-	};
-
-	const addCharacter = async () => {
-		const formData = new FormData();
-		formData.append('Name', name);
-		formData.append('Title', title);
-		formData.append('Biography', biography);
-		formData.append('BirthDate', birthDate);
-		formData.append('DeathDate', deathDate);
-		formData.append('NationID', nationID!.toString());
-		formData.append('ReligionID', religionID!.toString());
-		if (imageFile) {
-			formData.append('Image', imageFile);
-		}
-
-		const response = await fetch('http://localhost:5000/api/characters/new', {
-			method: 'POST',
-			body: formData
-		});
-
-		if (response.ok) {
-			const data = await response.json();
-			alert(`Character added with ID: ${data.CharacterID}`);
-			name = '';
-			title = '';
-			biography = '';
-			birthDate = '';
-			deathDate = '';
-			nationID = null;
-			religionID = null;
-			imageFile = null;
-			await fetchCharacters();
-		} else {
-			alert('Failed to add character');
-		}
-	};
-
-	const handleFileUpload = (event: Event) => {
-		const target = event.target as HTMLInputElement;
-		if (target.files) {
-			imageFile = target.files[0];
-		}
-	};
+	}
 </script>
 
-{#if loading}
-	<p class="text-center text-gray-500">Loading...</p>
-{:else if error}
-	<p class="text-center text-red-500">{error}</p>
-{:else}
+<div class="container mx-auto p-4">
 	<div class="mb-6">
 		<button
 			on:click={() => goto('/characters')}
@@ -89,76 +48,92 @@
 			← Back to characters
 		</button>
 	</div>
+
 	<form
-		on:submit|preventDefault={addCharacter}
+		on:submit|preventDefault={handleSubmit}
 		class="mb-4 space-y-6 max-w-lg mx-auto p-5 border rounded-lg shadow-md bg-slate-700 bg-opacity-80 border-slate-800"
 	>
 		<div class="mb-4">
 			<input
 				type="text"
-				bind:value={name}
-				placeholder="Name"
+				bind:value={character.Name}
+				placeholder="Character Name"
 				required
 				class="input w-full p-2 border rounded"
 			/>
 		</div>
+
 		<div class="mb-4">
 			<input
 				type="text"
-				bind:value={title}
+				bind:value={character.Title}
 				placeholder="Title"
 				class="input w-full p-2 border rounded"
 			/>
 		</div>
+
+		<div class="mb-4">
+			<select bind:value={character.NationID} class="input w-full p-2 border rounded">
+				<option value={null}>Select Nation</option>
+				{#each data.nations as nation}
+					<option value={nation.NationID}>{nation.Name}</option>
+				{/each}
+			</select>
+		</div>
+
+		<div class="mb-4">
+			<select bind:value={character.ReligionID} class="input w-full p-2 border rounded">
+				<option value={null}>Select Religion</option>
+				{#each data.religions as religion}
+					<option value={religion.ReligionID}>{religion.Name}</option>
+				{/each}
+			</select>
+		</div>
+
 		<div class="mb-4">
 			<textarea
-				bind:value={biography}
+				bind:value={character.Biography}
 				placeholder="Biography"
-				class="textarea w-full p-2 border rounded"
+				class="textarea w-full p-2 border rounded h-32"
 			></textarea>
 		</div>
+
+		<div class="grid grid-cols-2 gap-4 mb-4">
+			<div>
+				<label for="birthDate" class="block text-sm font-medium text-gray-300 mb-1"
+					>Birth Date</label
+				>
+				<input
+					id="birthDate"
+					type="date"
+					bind:value={character.BirthDate}
+					class="input w-full p-2 border rounded"
+				/>
+			</div>
+			<div>
+				<label for="deathDate" class="block text-sm font-medium text-gray-300 mb-1"
+					>Death Date</label
+				>
+				<input
+					id="deathDate"
+					type="date"
+					bind:value={character.DeathDate}
+					class="input w-full p-2 border rounded"
+				/>
+			</div>
+		</div>
+
 		<div class="mb-4">
 			<input
 				type="text"
-				bind:value={birthDate}
-				placeholder="Birth Date"
+				bind:value={character.ImageURL}
+				placeholder="Image URL"
 				class="input w-full p-2 border rounded"
 			/>
 		</div>
-		<div class="mb-4">
-			<input
-				type="text"
-				bind:value={deathDate}
-				placeholder="Death Date"
-				class="input w-full p-2 border rounded"
-			/>
-		</div>
-		<div class="mb-4">
-			<input
-				type="number"
-				bind:value={nationID}
-				placeholder="Nation ID"
-				class="input w-full p-2 border rounded"
-			/>
-		</div>
-		<div class="mb-4">
-			<input
-				type="number"
-				bind:value={religionID}
-				placeholder="Religion ID"
-				class="input w-full p-2 border rounded"
-			/>
-		</div>
-		<div class="mb-4">
-			<input
-				type="file"
-				accept="image/*"
-				on:change={handleFileUpload}
-				class="input w-full p-2 border rounded"
-			/>
-		</div>
+
 		<button type="submit" class="button w-full p-2 bg-sky-700 text-white rounded hover:bg-sky-600">
 			Add Character
 		</button>
 	</form>
-{/if}
+</div>

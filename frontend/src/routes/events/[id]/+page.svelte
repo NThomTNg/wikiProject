@@ -158,7 +158,7 @@
 				{#if event.NationName || event.LocationName}
 					<div class="flex flex-wrap gap-2 mb-6">
 						{#if event.NationName}
-							<span class="px-3 py-1 bg-purple-800 text-white rounded">
+							<span class="px-3 py-1 bg-sky-800 text-white rounded">
 								Nation: {event.NationName}
 							</span>
 						{/if}

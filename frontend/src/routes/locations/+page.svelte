@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Location } from '$lib/types';
+	import ItemBox from '$lib/components/ItemBox.svelte';
+	import GridLayout from '$lib/components/GridLayout.svelte';
 
 	let locations: Location[] = [];
 	let loading = true;
@@ -25,14 +27,16 @@
 {:else if error}
 	<p class="text-center text-red-500">{error}</p>
 {:else}
-	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+	<div class="flex justify-end w-full mb-5">
+		<a href="./locations/new">
+			<button class="bg-sky-700 hover:bg-sky-600 text-white font-bold py-2 mt-5 px-4 rounded">
+				New Location
+			</button>
+		</a>
+	</div>
+	<GridLayout>
 		{#each locations as location}
-			<a
-				href={`/locations/${location.LocationID}`}
-				class="block bg-slate-700 bg-opacity-80 border-slate-800 border p-4 rounded-lg shadow
-				overflow-hidden hover:shadow-xl transition-all duration-300 hover:bg-slate-800 transform hover:-translate-y-1 cursor-pointer"
-			>
-				<h2 class="text-xl font-semibold mb-2 text-white text-center">{location.Name}</h2>
+			<ItemBox href={`/locations/${location.LocationID}`} title={location.Name}>
 				{#if location.LocationType}
 					<p class="text-white text-center mb-4">{location.LocationType}</p>
 				{/if}
@@ -48,14 +52,7 @@
 						Population: {location.Population.toLocaleString()}
 					</p>
 				{/if}
-			</a>
+			</ItemBox>
 		{/each}
-	</div>
-	<div>
-		<a href="./locations/new">
-			<button class="bg-sky-700 hover:bg-sky-600 text-white font-bold py-2 mt-5 px-4 rounded">
-				New Location
-			</button>
-		</a>
-	</div>
+	</GridLayout>
 {/if}
