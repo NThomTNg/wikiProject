@@ -1,56 +1,33 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import type { Nation } from '$lib/types';
+	export let data;
 
-	let nations: Nation[] = [];
-	let loading = true;
-	let error: string | null = null;
-
-	let name = '';
-	let government = '';
-	let capitalLocationID: number | null = null;
-	let description = '';
-	let foundingDate = '';
-	let majorReligionID: number | null = null;
-	let culture = '';
-	let economy = '';
-	let militaryStrength = '';
-	let imageFile: File | null = null;
-
-	onMount(async () => {
-		await fetchNations();
-	});
-
-	const fetchNations = async () => {
-		try {
-			const response = await fetch('http://localhost:5000/api/nations');
-			if (!response.ok) throw new Error('Failed to fetch nations');
-			const data = await response.json();
-			nations = data.data;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'An error occurred';
-		} finally {
-			loading = false;
-		}
+	let nation = {
+		Name: '',
+		Government: '',
+		CapitalLocationID: null as number | null,
+		Description: '',
+		FoundingDate: '',
+		MajorReligionID: null as number | null,
+		Culture: '',
+		Economy: '',
+		MilitaryStrength: '',
+		ImageURL: ''
 	};
 
-	const addNation = async () => {
+	async function handleSubmit() {
 		try {
-			if (!capitalLocationID || !majorReligionID) {
-				throw new Error('Capital Location ID and Major Religion ID are required');
-			}
-
 			const nationData = {
-				Name: name.trim(),
-				Government: government.trim(),
-				CapitalLocationID: Number(capitalLocationID),
-				Description: description.trim(),
-				FoundingDate: foundingDate.trim(),
-				MajorReligionID: Number(majorReligionID),
-				Culture: culture.trim(),
-				Economy: economy.trim(),
-				MilitaryStrength: militaryStrength.trim()
+				Name: nation.Name,
+				Government: nation.Government,
+				CapitalLocationID: nation.CapitalLocationID,
+				Description: nation.Description,
+				FoundingDate: nation.FoundingDate,
+				MajorReligionID: nation.MajorReligionID,
+				Culture: nation.Culture,
+				Economy: nation.Economy,
+				MilitaryStrength: nation.MilitaryStrength,
+				ImageURL: nation.ImageURL
 			};
 
 			const response = await fetch('http://localhost:5000/api/nations', {
@@ -62,46 +39,22 @@
 				body: JSON.stringify(nationData)
 			});
 
-			const data = await response.json();
+			const result = await response.json();
 
 			if (!response.ok) {
-				throw new Error(data.message || 'Failed to add nation');
+				throw new Error(result.message || result.error || 'Failed to add nation');
 			}
 
-			alert(`Nation added successfully!`);
-
-			name = '';
-			government = '';
-			capitalLocationID = null;
-			description = '';
-			foundingDate = '';
-			majorReligionID = null;
-			culture = '';
-			economy = '';
-			militaryStrength = '';
-			imageFile = null;
-
-			await fetchNations();
+			alert('Nation added successfully!');
+			goto('/nations');
 		} catch (err) {
 			console.error('Error adding nation:', err);
-			error = err instanceof Error ? err.message : 'An unexpected error occurred';
-			alert(error);
+			alert(err instanceof Error ? err.message : 'An unexpected error occurred');
 		}
-	};
-
-	const handleFileUpload = (event: Event) => {
-		const target = event.target as HTMLInputElement;
-		if (target.files) {
-			imageFile = target.files[0];
-		}
-	};
+	}
 </script>
 
-{#if loading}
-	<p class="text-center text-gray-500">Loading...</p>
-{:else if error}
-	<p class="text-center text-red-500">{error}</p>
-{:else}
+<div class="container mx-auto p-4">
 	<div class="mb-6">
 		<button
 			on:click={() => goto('/nations')}
@@ -110,100 +63,115 @@
 			← Back to nations
 		</button>
 	</div>
+
 	<form
-		on:submit|preventDefault={addNation}
+		on:submit|preventDefault={handleSubmit}
 		class="mb-4 space-y-6 max-w-lg mx-auto p-5 border rounded-lg shadow-md bg-slate-700 bg-opacity-80 border-slate-800"
 	>
 		<div class="mb-4">
 			<input
 				type="text"
-				bind:value={name}
+				bind:value={nation.Name}
 				placeholder="Nation Name"
 				required
 				class="input w-full p-2 border rounded"
 			/>
 		</div>
+
 		<div class="mb-4">
 			<input
 				type="text"
-				bind:value={government}
+				bind:value={nation.Government}
 				placeholder="Government Type"
 				required
 				class="input w-full p-2 border rounded"
 			/>
 		</div>
+
 		<div class="mb-4">
-			<input
-				type="number"
-				bind:value={capitalLocationID}
-				placeholder="Capital Location ID"
-				required
+			<select
+				bind:value={nation.CapitalLocationID}
 				class="input w-full p-2 border rounded"
-			/>
+				required
+			>
+				<option value={null}>Select Capital Location</option>
+				{#each data.locations as location}
+					<option value={location.LocationID}>{location.Name}</option>
+				{/each}
+			</select>
 		</div>
+
+		<div class="mb-4">
+			<select bind:value={nation.MajorReligionID} class="input w-full p-2 border rounded" required>
+				<option value={null}>Select Major Religion</option>
+				{#each data.religions as religion}
+					<option value={religion.ReligionID}>{religion.Name}</option>
+				{/each}
+			</select>
+		</div>
+
 		<div class="mb-4">
 			<textarea
-				bind:value={description}
+				bind:value={nation.Description}
 				placeholder="Description"
-				class="textarea w-full p-2 border rounded"
 				required
+				class="textarea w-full p-2 border rounded h-32"
 			></textarea>
 		</div>
+
+		<div class="mb-4">
+			<label for="foundingDate" class="block text-sm font-medium text-gray-300 mb-1"
+				>Founding Date</label
+			>
+			<input
+				id="foundingDate"
+				type="text"
+				bind:value={nation.FoundingDate}
+				class="input w-full p-2 border rounded"
+			/>
+		</div>
+
 		<div class="mb-4">
 			<input
 				type="text"
-				bind:value={foundingDate}
-				placeholder="Founding Date"
-				class="input w-full p-2 border rounded"
-				required
-			/>
-		</div>
-		<div class="mb-4">
-			<input
-				type="number"
-				bind:value={majorReligionID}
-				placeholder="Major Religion ID"
-				class="input w-full p-2 border rounded"
-				required
-			/>
-		</div>
-		<div class="mb-4">
-			<input
-				type="text"
-				bind:value={culture}
+				bind:value={nation.Culture}
 				placeholder="Culture"
 				class="input w-full p-2 border rounded"
-				required
 			/>
 		</div>
+
 		<div class="mb-4">
 			<input
 				type="text"
-				bind:value={economy}
+				bind:value={nation.Economy}
 				placeholder="Economy"
 				class="input w-full p-2 border rounded"
-				required
 			/>
 		</div>
+
 		<div class="mb-4">
 			<input
 				type="text"
-				bind:value={militaryStrength}
+				bind:value={nation.MilitaryStrength}
 				placeholder="Military Strength"
 				class="input w-full p-2 border rounded"
-				required
 			/>
 		</div>
+
 		<div class="mb-4">
+			<label for="imageUrl" class="block text-sm font-medium text-gray-300 mb-1">Nation Image</label
+			>
 			<input
-				type="file"
-				accept="image/*"
-				on:change={handleFileUpload}
-				class="input w-full p-2 border rounded"
+				id="imageUrl"
+				type="text"
+				bind:value={nation.ImageURL}
+				placeholder="Image URL"
+				class="input w-full p-2 border rounded mt-1"
 			/>
 		</div>
+
 		<button type="submit" class="button w-full p-2 bg-sky-700 text-white rounded hover:bg-sky-600">
 			Add Nation
 		</button>
 	</form>
-{/if}
+</div>

@@ -10,24 +10,39 @@
 		ReligionID: null as number | null,
 		BirthDate: null as string | null,
 		DeathDate: null as string | null,
-		ImageURL: ''
+		ImageURL: null as string | null
 	};
 
 	async function handleSubmit() {
 		try {
+			const formData = new FormData();
+			const fields: Record<keyof typeof character, (val: any) => string | null> = {
+				Name: (val: string) => val || null,
+				Title: (val: string) => val || null,
+				Biography: (val: string) => val || null,
+				NationID: (val: number | null) => val?.toString() || null,
+				ReligionID: (val: number | null) => val?.toString() || null,
+				BirthDate: (val: string | null) => val || null,
+				DeathDate: (val: string | null) => val || null,
+				ImageURL: (val: string | null) => (val && val.trim() !== '' ? val : null)
+			};
+
+			Object.entries(fields).forEach(([key, converter]) => {
+				const value = converter(character[key as keyof typeof character]);
+				if (value !== null) {
+					formData.append(key, value);
+				}
+			});
+
 			const response = await fetch('http://localhost:5000/api/characters', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Accept: 'application/json'
-				},
-				body: JSON.stringify(character)
+				body: formData
 			});
 
 			const result = await response.json();
 
 			if (!response.ok) {
-				throw new Error(result.message || 'Failed to add character');
+				throw new Error(result.error || 'Failed to add character');
 			}
 
 			alert('Character added successfully!');
@@ -105,7 +120,7 @@
 				>
 				<input
 					id="birthDate"
-					type="date"
+					type="number"
 					bind:value={character.BirthDate}
 					class="input w-full p-2 border rounded"
 				/>
@@ -116,7 +131,7 @@
 				>
 				<input
 					id="deathDate"
-					type="date"
+					type="number"
 					bind:value={character.DeathDate}
 					class="input w-full p-2 border rounded"
 				/>
@@ -124,11 +139,14 @@
 		</div>
 
 		<div class="mb-4">
+			<label for="imageUpload" class="block text-sm font-medium text-gray-300 mb-1"
+				>Character Image</label
+			>
 			<input
 				type="text"
 				bind:value={character.ImageURL}
-				placeholder="Image URL"
-				class="input w-full p-2 border rounded"
+				placeholder="Image URL (Optional)"
+				class="input w-full p-2 border rounded mt-1"
 			/>
 		</div>
 

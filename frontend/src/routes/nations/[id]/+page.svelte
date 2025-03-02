@@ -4,7 +4,7 @@
 
 	export let data: { nation?: Nation; error?: string };
 
-	function formatDate(date?: string): string {
+	function formatDate(date?: string | null): string {
 		if (!date) return 'Unknown';
 		return new Date(date).toLocaleDateString('en-US', {
 			year: 'numeric',

@@ -31,36 +31,37 @@ export const getCharacterById = async (req: Request, res: Response, next: NextFu
 };
 
 export const addCharacter = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const { Name, Title, Biography, BirthDate, DeathDate, NationID, ReligionID, ImageURL } = req.body;
-
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
-
-  if (!Name) {
-    res.status(400).json({ error: 'Name is required' });
-    return;
-  }
-
   try {
+    const { Name, Title, Biography, BirthDate, DeathDate, NationID, ReligionID, ImageURL } = req.body;
+    if (!Name) {
+      res.status(400).json({ error: 'Name is required' });
+      return;
+    }
+
     const pool = await connectDB();
     const result = await pool.request()
       .input('Name', sql.NVarChar(100), Name)
-      .input('Title', sql.NVarChar(200), Title)
-      .input('Biography', sql.NVarChar(sql.MAX), Biography)
-      .input('BirthDate', sql.NVarChar(100), BirthDate)
-      .input('DeathDate', sql.NVarChar(100), DeathDate)
-      .input('NationID', sql.Int, NationID)
-      .input('ReligionID', sql.Int, ReligionID)
-      .input('ImageURL', sql.NVarChar(255), ImageURL)
+      .input('Title', sql.NVarChar(200), Title || null)
+      .input('Biography', sql.NVarChar(sql.MAX), Biography || null)
+      .input('BirthDate', sql.NVarChar(100), BirthDate || null)
+      .input('DeathDate', sql.NVarChar(100), DeathDate || null)
+      .input('NationID', sql.Int, NationID || null)
+      .input('ReligionID', sql.Int, ReligionID || null)
+      .input('ImageURL', sql.NVarChar(255), ImageURL || null)
       .query(`
-        INSERT INTO Characters (Name, Title, Biography, BirthDate, DeathDate, NationID, ReligionID, CreatedDate, LastModifiedDate)
-        VALUES (@Name, @Title, @Biography, @BirthDate, @DeathDate, @NationID, @ReligionID, GETDATE(), GETDATE());
+        INSERT INTO Characters (Name, Title, Biography, BirthDate, DeathDate, NationID, ReligionID, ImageURL, CreatedDate, LastModifiedDate)
+        VALUES (@Name, @Title, @Biography, @BirthDate, @DeathDate, @NationID, @ReligionID, @ImageURL, GETDATE(), GETDATE());
         SELECT SCOPE_IDENTITY() AS CharacterID;
       `);
 
     const newCharacterID = result.recordset[0].CharacterID;
     res.status(201).json({ message: 'Character added', CharacterID: newCharacterID });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to add character' });
+    console.error('Error adding character:', error);
+    res.status(500).json({ 
+      error: 'Failed to add character', 
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 };
 

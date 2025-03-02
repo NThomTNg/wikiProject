@@ -15,7 +15,6 @@
 	let errorMessage = '';
 	let successMessage = '';
 
-	// Define common time periods as options
 	const periodOptions = [
 		'Ancient History',
 		'Classical Antiquity',
@@ -27,7 +26,6 @@
 		'Contemporary History'
 	];
 
-	// Define category options
 	const categoryOptions = [
 		'Political',
 		'Military',

@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import type { Religion } from '$lib/types';
 	import { goto } from '$app/navigation';
+	import { getImageUrl } from '$lib/utils/imageUtils';
 
 	export let data: { religion?: Religion; error?: string };
 
@@ -59,86 +61,79 @@
 			</button>
 		</div>
 
-		<div class="grid md:grid-cols-2 gap-8">
-			<div class="relative">
-				{#if data.religion.ImageURL}
-					<img
-						src={data.religion.ImageURL}
-						alt={data.religion.Name}
-						class="w-full h-auto rounded-lg shadow-lg max-h-[600px] object-cover"
-					/>
-				{:else}
-					<div class="bg-gray-200 rounded-lg flex items-center justify-center h-96 aspect-[3/4]">
-						<span class="text-gray-500">No image available</span>
-					</div>
-				{/if}
-			</div>
+		<div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+			<h1 class="text-3xl text-white font-bold mb-2">{data.religion.Name}</h1>
 
-			<div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
-				<h1 class="text-3xl text-white font-bold mb-2">{data.religion.Name}</h1>
+			<div class="grid md:grid-cols-2 gap-8 mt-6">
+				<div>
+					{#if data.religion.ImageURL}
+						<img
+							src={getImageUrl(data.religion.ImageURL)}
+							alt={data.religion.Name}
+							class="w-full h-auto rounded-lg shadow-lg max-h-[600px] object-cover mb-4"
+						/>
+					{/if}
+				</div>
 
-				<div class="space-y-4">
+				<div>
 					{#if data.religion.Description}
-						<div class="border-b pb-4">
+						<div class="border-b pb-4 mb-4">
 							<h3 class="text-lg text-white font-semibold mb-2">Description</h3>
-							<p class="text-gray-700 dark:text-gray-300 whitespace-pre-line">
-								{data.religion.Description}
-							</p>
+							<p class="text-gray-300 whitespace-pre-line">{data.religion.Description}</p>
 						</div>
 					{/if}
 
 					{#if data.religion.Deities}
-						<div class="border-b pb-4">
+						<div class="border-b pb-4 mb-4">
 							<h3 class="text-lg text-white font-semibold mb-2">Deities</h3>
-							<p class="text-gray-700 dark:text-gray-300">{data.religion.Deities}</p>
+							<p class="text-gray-300">{data.religion.Deities}</p>
 						</div>
 					{/if}
 
 					{#if data.religion.HolyText}
-						<div class="border-b pb-4">
+						<div class="border-b pb-4 mb-4">
 							<h3 class="text-lg text-white font-semibold mb-2">Holy Texts</h3>
-							<p class="text-gray-700 dark:text-gray-300">{data.religion.HolyText}</p>
+							<p class="text-gray-300">{data.religion.HolyText}</p>
 						</div>
 					{/if}
 
 					{#if data.religion.Practices}
-						<div class="border-b pb-4">
+						<div class="border-b pb-4 mb-4">
 							<h3 class="text-lg text-white font-semibold mb-2">Practices</h3>
-							<p class="text-gray-700 dark:text-gray-300">{data.religion.Practices}</p>
+							<p class="text-gray-300">{data.religion.Practices}</p>
 						</div>
 					{/if}
 
 					{#if data.religion.FoundingDate}
-						<div class="border-b pb-4">
+						<div class="border-b pb-4 mb-4">
 							<h3 class="text-lg text-white font-semibold mb-2">Founding Date</h3>
-							<p class="text-gray-700 dark:text-gray-300">
-								{formatDate(data.religion.FoundingDate)}
-							</p>
+							<p class="text-gray-300">{data.religion.FoundingDate}</p>
 						</div>
 					{/if}
 
 					{#if data.religion.Hierarchy}
-						<div class="border-b pb-4">
+						<div class="border-b pb-4 mb-4">
 							<h3 class="text-lg text-white font-semibold mb-2">Hierarchy</h3>
-							<p class="text-gray-700 dark:text-gray-300">{data.religion.Hierarchy}</p>
+							<p class="text-gray-300">{data.religion.Hierarchy}</p>
 						</div>
 					{/if}
 
 					<div class="mt-4">
-						<p class="text-sm text-gray-500 dark:text-gray-400">
-							Created: {formatDate(data.religion.CreatedDate.toString())}
+						<p class="text-sm text-gray-400">
+							Created: {formatDate(data.religion.CreatedDate?.toString())}
 						</p>
-						<p class="text-sm text-gray-500 dark:text-gray-400">
-							Last Modified: {formatDate(data.religion.LastModifiedDate.toString())}
+						<p class="text-sm text-gray-400">
+							Last Modified: {formatDate(data.religion.LastModifiedDate?.toString())}
 						</p>
 					</div>
+
+					<button
+						on:click={deleteReligion}
+						class="mt-6 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-600"
+					>
+						Delete Religion
+					</button>
 				</div>
-				<button
-					on:click={deleteReligion}
-					class="mt-4 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-600"
-				>
-					Delete Religion
-				</button>
 			</div>
 		</div>
 	</div>

@@ -51,20 +51,6 @@ export interface CharacterWithRelations extends Character {
   ReligionName?: string | null;
 }
 
-export interface Religion {
-  ReligionID: number;
-  Name: string;
-  Description?: string | null;
-  Deities?: string | null;
-  HolyText?: string | null;
-  Practices?: string | null;
-  FoundingDate?: string | null;
-  Hierarchy?: string | null;
-  CreatedDate: Date;
-  LastModifiedDate: Date;
-  ImageURL?: string | null;
-}
-
 export interface CharacterRelationship {
   RelationshipID: number;
   CharacterID1: number;
@@ -83,6 +69,20 @@ export interface CharacterFormData {
   nations: Nation[];
   religions: Religion[];
   locations: Location[];
+}
+
+export interface Religion {
+  ReligionID: number;
+  Name: string;
+  Description?: string | null;
+  Deities?: string | null;
+  HolyText?: string | null;
+  Practices?: string | null;
+  FoundingDate?: string | null;
+  Hierarchy?: string | null;
+  ImageURL?: string | null;
+  CreatedDate: string;
+  LastModifiedDate: string;
 }
 
 export interface Event {

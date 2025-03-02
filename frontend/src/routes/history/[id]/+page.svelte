@@ -24,7 +24,6 @@
 		error = null;
 		console.log(`Fetching history details for ID: ${id}`);
 
-		// Basic ID validation check (similar to the one in +page.ts)
 		if (id.includes('.jpg') || id.includes('.png') || id.includes('.jpeg') || id.includes('.gif')) {
 			console.error(`ID appears to be an image filename: ${id}`);
 			error =
@@ -34,7 +33,6 @@
 		}
 
 		try {
-			// Add timestamp to prevent caching issues
 			const response = await fetch(
 				`http://localhost:5000/api/historyEntries/${id}?t=${Date.now()}`
 			);
@@ -47,11 +45,9 @@
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
 
-			// Get response as text first for debugging
 			const responseText = await response.text();
 			console.log('Response text:', responseText);
 
-			// Try to parse the response
 			let data;
 			try {
 				data = JSON.parse(responseText);
@@ -65,7 +61,6 @@
 				historyEntry = data.data || data;
 				console.log('History entry data loaded:', historyEntry);
 
-				// Fetch related entries if category is defined
 				if (historyEntry && historyEntry.Category) {
 					await fetchRelatedEntries(historyEntry.Category);
 				}
@@ -119,8 +114,6 @@
 		if (!entry || !entry.HistoryID) return;
 		goto(`/history/${entry.HistoryID}`);
 	}
-
-	// Use data from the load function if available, otherwise use data from the fetch
 	$: {
 		if (data && data.historyEntry && !loading) {
 			historyEntry = data.historyEntry;

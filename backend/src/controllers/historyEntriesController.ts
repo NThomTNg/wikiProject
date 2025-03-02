@@ -5,16 +5,15 @@ import { HistoryEntry, HistoryEntryWithRelations } from '../models/types';
 
 export const getHistoryEntries = async (req: Request, res: Response) => {
     try {
-        console.log('Fetching history entries...');
         const pool = await connectDB();
         
         const result = await pool.request().query(`
             SELECT h.*, 
-                   n.Name as NationName, 
-                   c.Name as CharacterName,
-                   e.Title as EventTitle,
-                   l.Name as LocationName,
-                   r.Name as ReligionName
+            n.Name as NationName, 
+            c.Name as CharacterName,
+            e.Title as EventTitle,
+            l.Name as LocationName,
+            r.Name as ReligionName
             FROM HistoryEntries h
             LEFT JOIN Nations n ON h.NationID = n.NationID
             LEFT JOIN Characters c ON h.CharacterID = c.CharacterID
@@ -24,7 +23,6 @@ export const getHistoryEntries = async (req: Request, res: Response) => {
             ORDER BY h.SortOrder, h.StartYear
         `);
         
-        console.log(`Query completed. Found ${result.recordset.length} history entries`);
         res.json({ data: result.recordset as HistoryEntryWithRelations[] });
     } catch (error) {
         console.error('Error in getHistoryEntries:', error);
@@ -43,11 +41,11 @@ export const getHistoryEntryById = async (req: Request, res: Response): Promise<
             .input('id', sql.Int, req.params.id)
             .query(`
                 SELECT h.*, 
-                       n.Name as NationName, 
-                       c.Name as CharacterName,
-                       e.Title as EventTitle,
-                       l.Name as LocationName,
-                       r.Name as ReligionName
+                n.Name as NationName, 
+                c.Name as CharacterName,
+                e.Title as EventTitle,
+                l.Name as LocationName,
+                r.Name as ReligionName
                 FROM HistoryEntries h
                 LEFT JOIN Nations n ON h.NationID = n.NationID
                 LEFT JOIN Characters c ON h.CharacterID = c.CharacterID

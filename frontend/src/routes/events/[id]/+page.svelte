@@ -19,7 +19,6 @@
 		console.log(`Fetching event details for ID: ${id}`);
 
 		try {
-			// Add timestamp to prevent caching issues
 			const response = await fetch(`http://localhost:5000/api/events/${id}?t=${Date.now()}`);
 			console.log('Response status:', response.status);
 
@@ -30,11 +29,9 @@
 				throw new Error(`HTTP error! status: ${response.status}`);
 			}
 
-			// Get response as text first for debugging
 			const responseText = await response.text();
 			console.log('Response text:', responseText);
 
-			// Try to parse the response
 			let data;
 			try {
 				data = JSON.parse(responseText);

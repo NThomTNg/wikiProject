@@ -37,8 +37,6 @@
 			alert(err instanceof Error ? err.message : 'An unexpected error occurred');
 		}
 	}
-
-	$: ({ locations } = data);
 </script>
 
 <div class="container mx-auto p-4">

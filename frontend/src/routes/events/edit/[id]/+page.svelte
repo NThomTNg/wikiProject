@@ -21,7 +21,6 @@
 
 	onMount(async () => {
 		try {
-			// Load event data and reference data in parallel
 			const [eventRes, locationsRes, nationsRes] = await Promise.all([
 				fetch(`http://localhost:5000/api/events/${id}`),
 				fetch('http://localhost:5000/api/locations'),
@@ -47,7 +46,6 @@
 			locations = locationsData.data || [];
 			nations = nationsData.data || [];
 
-			// Populate form fields
 			if (event) {
 				title = event.Title;
 				description = event.Description || '';

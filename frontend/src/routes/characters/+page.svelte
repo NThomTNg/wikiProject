@@ -47,5 +47,4 @@
 			</ItemBox>
 		{/each}
 	</GridLayout>
-	<div></div>
 {/if}

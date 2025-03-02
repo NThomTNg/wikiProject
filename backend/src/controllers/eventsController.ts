@@ -4,20 +4,18 @@ import { connectDB } from '../config/db';
 
 export const getEvents = async (req: Request, res: Response) => {
     try {
-        console.log('Fetching events...');
         const pool = await connectDB();
         
         const result = await pool.request().query(`
             SELECT e.EventID, e.Title, e.Description, e.EventDate, e.LocationID, e.NationID, 
-                   e.CreatedDate, e.LastModifiedDate,
-                   l.Name as LocationName, n.Name as NationName
+            e.CreatedDate, e.LastModifiedDate,
+            l.Name as LocationName, n.Name as NationName
             FROM Events e
             LEFT JOIN Locations l ON e.LocationID = l.LocationID
             LEFT JOIN Nations n ON e.NationID = n.NationID
             ORDER BY e.EventDate
         `);
         
-        console.log(`Query completed. Found ${result.recordset.length} events`);
         res.json({ data: result.recordset });
     } catch (error) {
         console.error('Error in getEvents:', error);

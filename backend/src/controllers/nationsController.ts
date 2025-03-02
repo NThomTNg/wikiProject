@@ -4,18 +4,15 @@ import { connectDB } from '../config/db';
 
 export const getNations = async (req: Request, res: Response) => {
     try {
-        console.log('Attempting to connect to database...');
         const pool = await connectDB();
-        console.log('Database connected, executing query...');
         
         const result = await pool.request().query(`
             SELECT NationID, Name, Government, CapitalLocationID, Description,
-                   FoundingDate, MajorReligionID, Culture, Economy,
-                   MilitaryStrength, CreatedDate, LastModifiedDate, ImageURL
+            FoundingDate, MajorReligionID, Culture, Economy,
+            MilitaryStrength, CreatedDate, LastModifiedDate, ImageURL
             FROM Nations
         `);
         
-        console.log(`Query completed. Found ${result.recordset.length} nations`);
         res.json({ data: result.recordset });
     } catch (error) {
         console.error('Error in getNations:', error);
@@ -58,8 +55,6 @@ export const addNation = async (req: Request, res: Response, next: NextFunction)
         MilitaryStrength,
         ImageURL
     } = req.body;
-
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
     if (!Name) {
         res.status(400).json({ error: 'Name is required' });

@@ -110,8 +110,11 @@
 			{#each events as event}
 				<div
 					class="bg-slate-800 bg-opacity-40 border border-black rounded-lg p-4 cursor-pointer transition-all duration-300 transform hover:-translate-y-1"
+					on:click={() => viewEvent(event)}
 					on:keypress={(e) => {
-						if (e.key === 'Enter' || e.key === ' ') viewEvent(event);
+						if (e.key === 'Enter' || e.key === ' ') {
+							viewEvent(event);
+						}
 					}}
 					tabindex="0"
 					role="button"

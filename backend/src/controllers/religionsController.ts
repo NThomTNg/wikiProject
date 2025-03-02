@@ -4,14 +4,12 @@ import { connectDB } from '../config/db';
 
 export const getReligions = async (req: Request, res: Response) => {
     try {
-        console.log('Attempting to connect to database...');
         const pool = await connectDB();
-        console.log('Database connected, executing query...');
         
         const result = await pool.request().query(`
             SELECT ReligionID, Name, Description, Deities, HolyText,
-                   Practices, FoundingDate, Hierarchy, CreatedDate, 
-                   LastModifiedDate, ImageURL
+            Practices, FoundingDate, Hierarchy, CreatedDate, 
+            LastModifiedDate, ImageURL
             FROM Religions
         `);
         
@@ -63,6 +61,11 @@ export const addReligion = async (req: Request, res: Response, next: NextFunctio
     }
 
     try {
+        console.log('Religion data received:', { 
+            Name, 
+            ImageURL: ImageURL || 'No image provided'
+        });
+
         const pool = await connectDB();
         const result = await pool.request()
             .input('Name', sql.NVarChar(100), Name)
@@ -76,11 +79,11 @@ export const addReligion = async (req: Request, res: Response, next: NextFunctio
             .query(`
                 INSERT INTO Religions (
                     Name, Description, Deities, HolyText, 
-                    Practices, FoundingDate, Hierarchy, CreatedDate, LastModifiedDate
+                    Practices, FoundingDate, Hierarchy, CreatedDate, LastModifiedDate, ImageURL
                 )
                 VALUES (
                     @Name, @Description, @Deities, @HolyText,
-                    @Practices, @FoundingDate, @Hierarchy, GETDATE(), GETDATE()
+                    @Practices, @FoundingDate, @Hierarchy, GETDATE(), GETDATE(), @ImageURL
                 );
                 SELECT SCOPE_IDENTITY() AS ReligionID;
             `);
@@ -102,7 +105,8 @@ export const updateReligion = async (req: Request, res: Response): Promise<void>
         HolyText,
         Practices,
         FoundingDate,
-        Hierarchy
+        Hierarchy,
+        ImageURL
     } = req.body;
 
     try {
@@ -116,6 +120,7 @@ export const updateReligion = async (req: Request, res: Response): Promise<void>
             .input('Practices', sql.NVarChar(sql.MAX), Practices)
             .input('FoundingDate', sql.NVarChar(100), FoundingDate)
             .input('Hierarchy', sql.NVarChar(sql.MAX), Hierarchy)
+            .input('ImageURL', sql.NVarChar(255), ImageURL)
             .query(`
                 UPDATE Religions
                 SET Name = @Name,
@@ -125,6 +130,7 @@ export const updateReligion = async (req: Request, res: Response): Promise<void>
                     Practices = @Practices,
                     FoundingDate = @FoundingDate,
                     Hierarchy = @Hierarchy,
+                    ImageURL = @ImageURL,
                     LastModifiedDate = GETDATE()
                 WHERE ReligionID = @id
             `);

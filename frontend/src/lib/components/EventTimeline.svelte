@@ -19,8 +19,8 @@
 	{#each sortedEvents as event, i}
 		<div
 			class="relative mb-12 flex items-center {i % 2 === 0 ? 'flex-row' : 'flex-row-reverse'} 
-                 sm:flex-row-reverse sm:even:flex-row
-                 md:flex-row-reverse md:even:flex-row"
+            sm:flex-row-reverse sm:even:flex-row
+            md:flex-row-reverse md:even:flex-row"
 			on:click={() => onEventClick(event)}
 			on:keypress={(e) => {
 				if (e.key === 'Enter' || e.key === ' ') onEventClick(event);
@@ -31,9 +31,9 @@
 		>
 			<div
 				class="{i % 2 === 0 ? 'mr-8' : 'ml-8'} 
-                      sm:ml-8 sm:even:mr-8 sm:w-5/12
-                      md:ml-8 md:even:mr-8
-                      w-10/1 md:w-5/12"
+                sm:ml-8 sm:even:mr-8 sm:w-5/12
+                md:ml-8 md:even:mr-8
+                w-10/1 md:w-5/12"
 			>
 				<div
 					class="bg-slate-800 bg-opacity-40 border border-black rounded-lg p-4 cursor-pointer transition-all duration-300 transform hover:-translate-y-1"
@@ -68,8 +68,8 @@
 
 			<div
 				class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-blue-500
-                     border-4 border-slate-900 z-10 shadow-lg hover:scale-125 transition-transform duration-200
-                     sm:left-1/2 md:left-1/2"
+                border-4 border-slate-900 z-10 shadow-lg hover:scale-125 transition-transform duration-200
+                sm:left-1/2 md:left-1/2"
 			></div>
 
 			<div class="hidden sm:block sm:w-5/12 md:w-5/12"></div>

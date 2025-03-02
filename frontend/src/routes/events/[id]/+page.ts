@@ -4,7 +4,6 @@ import type { EventWithRelations } from '$lib/types';
 
 export const load: PageLoad = async ({ params, fetch }) => {
     try {
-        // Validate that the ID is a valid number before making the API call
         const eventId = params.id;
         
         if (!eventId || isNaN(Number(eventId))) {
@@ -13,8 +12,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
         }
 
         console.log(`Loading event page for ID: ${eventId}`);
-        
-        // Add timestamp to prevent caching issues
+
         const response = await fetch(`http://localhost:5000/api/events/${eventId}?t=${Date.now()}`);
         console.log(`Response status for event ${eventId}:`, response.status);
         
@@ -27,11 +25,9 @@ export const load: PageLoad = async ({ params, fetch }) => {
             throw error(response.status, `Failed to load event: ${response.statusText}`);
         }
         
-        // First get the response as text for debugging
         const responseText = await response.text();
         console.log(`Response for event ${eventId}:`, responseText);
-        
-        // Then parse it as JSON
+
         let data;
         try {
             data = JSON.parse(responseText);
@@ -41,7 +37,6 @@ export const load: PageLoad = async ({ params, fetch }) => {
             throw error(500, `Failed to parse event data: ${responseText.substring(0, 100)}...`);
         }
         
-        // Extract event data from response
         const eventData = data.data || data;
         
         if (!eventData) {

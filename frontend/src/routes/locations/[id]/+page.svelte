@@ -4,9 +4,10 @@
 
 	export let data: { location?: Location; error?: string };
 
-	function formatDate(date?: string): string {
+	function formatDate(date?: string | Date): string {
 		if (!date) return 'Unknown';
-		return new Date(date).toLocaleDateString('en-US', {
+		const dateObj = date instanceof Date ? date : new Date(date);
+		return dateObj.toLocaleDateString('en-US', {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric'
@@ -116,10 +117,10 @@
 			<div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
 				<h2 class="text-2xl text-white font-bold mb-4">Additional Information</h2>
 				<div class="space-y-4">
-					{#if data.location.NationName}
+					{#if data.location.NationID}
 						<div class="border-b pb-4">
 							<h3 class="text-lg text-white font-semibold mb-2">Nation</h3>
-							<p class="text-gray-700 dark:text-gray-300">{data.location.NationName}</p>
+							<p class="text-gray-700 dark:text-gray-300">{data.location.NationID}</p>
 						</div>
 					{/if}
 					<div class="border-b pb-4">

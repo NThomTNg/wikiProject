@@ -3,7 +3,6 @@
 	import { goto } from '$app/navigation';
 	import type { Nation, Location, Event } from '$lib/types';
 
-	// Component state
 	let events: Event[] = [];
 	let locations: Location[] = [];
 	let nations: Nation[] = [];
@@ -11,7 +10,6 @@
 	let error: string | null = null;
 	let isSubmitting = false;
 
-	// Form state
 	let title = '';
 	let description = '';
 	let eventDate = '';
@@ -24,7 +22,6 @@
 
 	const fetchFormData = async () => {
 		try {
-			// Load locations, nations, and events for reference
 			const [locationsRes, nationsRes, eventsRes] = await Promise.all([
 				fetch('http://localhost:5000/api/locations'),
 				fetch('http://localhost:5000/api/nations'),
@@ -60,12 +57,10 @@
 		error = null;
 
 		try {
-			// Ensure we're sending null for empty values instead of undefined
 			const eventData = {
 				Title: title,
 				Description: description || null,
 				EventDate: eventDate || null,
-				// Explicitly handle potentially undefined or null values
 				LocationID: locationId !== null && locationId !== undefined ? Number(locationId) : null,
 				NationID: nationId !== null && nationId !== undefined ? Number(nationId) : null
 			};
@@ -82,16 +77,13 @@
 
 			console.log('Response status:', response.status);
 
-			// Try to get detailed response information
 			let responseText;
 			let responseJson;
 
 			try {
-				// First try to get text response for logging
 				responseText = await response.text();
 				console.log('Raw response:', responseText);
 
-				// Then parse it as JSON if possible
 				if (responseText) {
 					responseJson = JSON.parse(responseText);
 					console.log('Parsed response:', responseJson);
@@ -103,25 +95,20 @@
 			if (!response.ok) {
 				throw new Error(`Failed to create event: ${response.status} ${response.statusText}`);
 			}
-
-			// Success! Extract event ID safely
 			let eventId;
 
 			if (responseJson) {
-				// Try different possible response formats
 				eventId =
-					responseJson.data?.EventID || // Format: { data: { EventID: 123 } }
-					responseJson.EventID || // Format: { EventID: 123 }
-					responseJson.eventId || // Format: { eventId: 123 }
-					responseJson.id; // Format: { id: 123 }
+					responseJson.data?.EventID ||
+					responseJson.EventID ||
+					responseJson.eventId ||
+					responseJson.id;
 			}
 
-			// If we have a valid numeric event ID, navigate to that event's page
 			if (eventId && !isNaN(Number(eventId))) {
 				alert(`Event added successfully with ID: ${eventId}`);
-				goto(`/events`); // Just go to events list to be safe
+				goto(`/events`);
 			} else {
-				// If we can't determine the ID, just go to the events list
 				alert('Event created successfully');
 				goto('/events');
 			}
@@ -133,7 +120,6 @@
 		}
 	};
 
-	// Simple validation
 	function validateForm() {
 		return title.length > 0;
 	}

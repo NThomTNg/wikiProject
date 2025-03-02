@@ -13,7 +13,6 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
         console.log(`Loading history entry for editing, ID: ${historyId}`);
         
-        // Add timestamp to prevent caching issues
         const response = await fetch(`http://localhost:5000/api/historyEntries/${historyId}?t=${Date.now()}`);
         
         if (!response.ok) {
@@ -24,7 +23,6 @@ export const load: PageLoad = async ({ params, fetch }) => {
         const data = await response.json();
         const historyEntry: HistoryEntryWithRelations = data.data || data;
 
-        // Fetch nations for dropdown
         const nationsResponse = await fetch('http://localhost:5000/api/nations');
         const nationsData = await nationsResponse.json();
         const nations = nationsData.data || nationsData || [];
