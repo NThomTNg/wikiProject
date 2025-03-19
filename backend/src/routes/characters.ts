@@ -7,6 +7,7 @@ import {
     getCharacterById, 
     addCharacter,
     deleteCharacter,
+    updateCharacter
 } from '../controllers/characterController';
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.post('/', upload.single('Image'), addCharacter);
 router.get('/', getCharacters);
 router.get('/:id', getCharacterById);
 router.delete('/:id', deleteCharacter);
+router.put('/:id', updateCharacter);
 
 export default router;

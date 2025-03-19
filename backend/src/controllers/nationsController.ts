@@ -95,6 +95,68 @@ const newNationID = result.recordset[0].NationID;
     }
 };
 
+export const updateNation = async (req: Request, res: Response): Promise<void> => {
+    const nationId = req.params.id;
+    const {
+        Name,
+        Government,
+        CapitalLocationID,
+        Description,
+        FoundingDate,
+        MajorReligionID,
+        Culture,
+        Economy,
+        MilitaryStrength,
+        ImageURL
+    } = req.body;
+
+    if (!Name) {
+        res.status(400).json({ error: 'Name is required' });
+        return;
+    }
+
+    try {
+        const pool = await connectDB();
+        const result = await pool.request()
+            .input('Name', sql.NVarChar(100), Name)
+            .input('Government', sql.NVarChar(100), Government)
+            .input('CapitalLocationID', sql.Int, CapitalLocationID)
+            .input('Description', sql.NVarChar(sql.MAX), Description)
+            .input('FoundingDate', sql.NVarChar(100), FoundingDate)
+            .input('MajorReligionID', sql.Int, MajorReligionID)
+            .input('Culture', sql.NVarChar(sql.MAX), Culture)
+            .input('Economy', sql.NVarChar(sql.MAX), Economy)
+            .input('MilitaryStrength', sql.NVarChar(100), MilitaryStrength)
+            .input('ImageURL', sql.NVarChar(255), ImageURL)
+            .input('id', sql.Int, nationId)
+            .query(`
+                UPDATE Nations
+                SET Name = @Name,
+                    Government = @Government,
+                    CapitalLocationID = @CapitalLocationID,
+                    Description = @Description,
+                    FoundingDate = @FoundingDate,
+                    MajorReligionID = @MajorReligionID,
+                    Culture = @Culture,
+                    Economy = @Economy,
+                    MilitaryStrength = @MilitaryStrength,
+                    ImageURL = @ImageURL,
+                    LastModifiedDate = GETDATE()
+                WHERE NationID = @id
+            `);
+
+        if (result.rowsAffected[0] === 0) {
+            res.status(404).json({ error: 'Nation not found' });
+            return;
+        }
+
+        res.status(200).json({ message: 'Nation updated successfully' });
+    } catch (error) {
+        console.error('Error updating nation:', error);
+        res.status(500).json({ error: 'Failed to update nation' });
+    }
+}
+
 export const deleteNation = async (req: Request, res: Response): Promise<void> => {
     const nationId = req.params.id;
 

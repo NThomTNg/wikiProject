@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { Character } from '$lib/types';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 
 	export let data: { character?: Character; error?: string };
+	const id = $page.params.id;
 
 	function formatDate(date?: string | null): string {
 		if (!date) return 'Unknown';
@@ -11,6 +13,10 @@
 			month: 'long',
 			day: 'numeric'
 		});
+	}
+
+	function handleEdit() {
+		goto(`/characters/edit/${id}`);
 	}
 
 	async function deleteCharacter() {
@@ -56,6 +62,12 @@
 				class="text-white bg-sky-700 p-2 rounded hover:bg-sky-600 hover:shadow-lg"
 			>
 				← Back to characters
+			</button>
+			<button
+				on:click={handleEdit}
+				class="text-white bg-sky-700 p-2 rounded hover:bg-sky-600 hover:shadow-lg ml-2"
+			>
+				Edit Character
 			</button>
 		</div>
 

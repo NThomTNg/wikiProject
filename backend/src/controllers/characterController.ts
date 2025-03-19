@@ -87,3 +87,45 @@ export const deleteCharacter = async (req: Request, res: Response): Promise<void
   }
 };
 
+export const updateCharacter = async (req: Request, res: Response): Promise<void> => {
+  const characterId = req.params.id;
+  const { Name, Title, Biography, BirthDate, DeathDate, NationID, ReligionID, ImageURL } = req.body;
+
+  try {
+      const pool = await connectDB();
+      const result = await pool.request()
+          .input('id', sql.Int, characterId)
+          .input('Name', sql.NVarChar(100), Name)
+          .input('Title', sql.NVarChar(200), Title || null)
+          .input('Biography', sql.NVarChar(sql.MAX), Biography || null)
+          .input('BirthDate', sql.NVarChar(100), BirthDate || null)
+          .input('DeathDate', sql.NVarChar(100), DeathDate || null)
+          .input('NationID', sql.Int, NationID || null)
+          .input('ReligionID', sql.Int, ReligionID || null)
+          .input('ImageURL', sql.NVarChar(255), ImageURL || null)
+          .query(`
+              UPDATE Characters
+              SET Name = @Name,
+                  Title = @Title,
+                  Biography = @Biography,
+                  BirthDate = @BirthDate,
+                  DeathDate = @DeathDate,
+                  NationID = @NationID,
+                  ReligionID = @ReligionID,
+                  ImageURL = @ImageURL,
+                  LastModifiedDate = GETDATE()
+              WHERE CharacterID = @id
+          `);
+
+      if (result.rowsAffected[0] === 0) {
+          res.status(404).json({ error: 'Character not found' });
+          return;
+      }
+
+      res.status(200).json({ message: 'Character updated successfully' });
+  } catch (error) {
+      console.error('Error updating character:', error);
+      res.status(500).json({ error: 'Failed to update character' });
+  }
+}
+

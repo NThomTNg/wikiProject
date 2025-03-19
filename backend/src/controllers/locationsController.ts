@@ -1,3 +1,4 @@
+import { updateCharacter } from './characterController';
 import { NextFunction, Request, Response } from 'express';
 import sql from 'mssql';
 import { connectDB } from '../config/db';
@@ -87,6 +88,63 @@ export const createLocation = async (req: Request, res: Response, next: NextFunc
     res.status(201).json({ message: 'Location added', LocationID: newLocationID });
   } catch (error) {
     res.status(500).json({ error: 'Failed to add location' });
+  }
+};
+
+export const updateLocation = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const locationId = req.params.id;
+  const { 
+    Name, 
+    LocationType, 
+    Description, 
+    NationID, 
+    CoordinateX, 
+    CoordinateY, 
+    Climate, 
+    Population 
+  } = req.body;
+
+  if (!Name || !LocationType) {
+    res.status(400).json({ error: 'Name and LocationType are required' });
+    return;
+  }
+
+  try {
+    const pool = await connectDB();
+    const result = await pool.request()
+      .input('LocationID', sql.Int, locationId)
+      .input('Name', sql.NVarChar(100), Name)
+      .input('LocationType', sql.NVarChar(50), LocationType)
+      .input('Description', sql.NVarChar(sql.MAX), Description)
+      .input('NationID', sql.Int, NationID)
+      .input('CoordinateX', sql.Float, CoordinateX)
+      .input('CoordinateY', sql.Float, CoordinateY)
+      .input('Climate', sql.NVarChar(50), Climate)
+      .input('Population', sql.Int, Population)
+      .query(`
+        UPDATE Locations 
+        SET 
+          Name = @Name, 
+          LocationType = @LocationType, 
+          Description = @Description, 
+          NationID = @NationID, 
+          CoordinateX = @CoordinateX, 
+          CoordinateY = @CoordinateY, 
+          Climate = @Climate, 
+          Population = @Population, 
+          LastModifiedDate = GETDATE() 
+        WHERE LocationID = @LocationID
+      `);
+
+    if (result.rowsAffected[0] === 0) {
+      res.status(404).json({ error: 'Location not found' });
+      return;
+    }
+
+    res.status(200).json({ message: 'Location updated successfully' });
+  } catch (error) {
+    console.error('Error updating location:', error);
+    res.status(500).json({ error: 'Failed to update location' });
   }
 };
 

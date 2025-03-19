@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { Location } from '$lib/types';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 
 	export let data: { location?: Location; error?: string };
+	const id = $page.params.id;
 
 	function formatDate(date?: string | Date): string {
 		if (!date) return 'Unknown';
@@ -12,6 +14,10 @@
 			month: 'long',
 			day: 'numeric'
 		});
+	}
+
+	function handleEdit() {
+		goto(`/locations/edit/${id}`);
 	}
 
 	async function deleteLocation() {
@@ -57,6 +63,12 @@
 				class="text-white bg-sky-700 p-2 rounded hover:bg-sky-600 hover:shadow-lg"
 			>
 				← Back to locations
+			</button>
+			<button
+				on:click={handleEdit}
+				class="text-white bg-sky-700 p-2 rounded hover:bg-sky-600 hover:shadow-lg ml-2"
+			>
+				Edit locations
 			</button>
 		</div>
 

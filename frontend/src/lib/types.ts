@@ -9,8 +9,8 @@ export interface Nation {
   Culture?: string | null;
   Economy?: string | null;
   MilitaryStrength?: string | null;
-  CreatedDate: Date;
-  LastModifiedDate: Date;
+  CreatedDate?: string;
+  LastModifiedDate?: string;
   ImageURL?: string | null;
 }
 

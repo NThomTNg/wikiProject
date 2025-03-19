@@ -84,7 +84,7 @@ app.get('/api/test-file-serving', (req, res) => {
 });
 
 app.use('/api/characters', characterRoutes);
-app.use('/api/nations', nationRoutes);  
+app.use('/api/nations', nationRoutes);
 app.use('/api/locations', locationRoutes);
 app.use('/api/religions', religionRoutes);
 app.use('/api/events', eventRoutes);

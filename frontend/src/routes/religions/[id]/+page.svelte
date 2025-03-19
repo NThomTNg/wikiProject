@@ -5,6 +5,7 @@
 	import { getImageUrl } from '$lib/utils/imageUtils';
 
 	export let data: { religion?: Religion; error?: string };
+	const id = $page.params.id;
 
 	function formatDate(date?: string): string {
 		if (!date) return 'Unknown';
@@ -13,6 +14,10 @@
 			month: 'long',
 			day: 'numeric'
 		});
+	}
+
+	function handleEdit() {
+		goto(`/religions/edit/${id}`);
 	}
 
 	async function deleteReligion() {
@@ -58,6 +63,12 @@
 				class="text-white bg-sky-700 p-2 rounded hover:bg-sky-600 hover:shadow-lg"
 			>
 				← Back to religions
+			</button>
+			<button
+				on:click={handleEdit}
+				class="text-white bg-sky-700 p-2 rounded hover:bg-sky-600 hover:shadow-lg ml-2"
+			>
+				Edit religion
 			</button>
 		</div>
 
