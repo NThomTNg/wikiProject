@@ -2,6 +2,7 @@
 	import type { Character } from '$lib/types';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { getImageUrl } from '$lib/utils/imageUtils';
 
 	export let data: { character?: Character; error?: string };
 	const id = $page.params.id;
@@ -75,7 +76,7 @@
 			<div class="relative">
 				{#if data.character.ImageURL}
 					<img
-						src={data.character.ImageURL}
+						src={getImageUrl(data.character.ImageURL)}
 						alt={data.character.Name}
 						class="w-full h-auto rounded-lg shadow-lg max-h-[600px] object-cover"
 					/>

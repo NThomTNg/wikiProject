@@ -31,20 +31,35 @@ export const getCharacterById = async (req: Request, res: Response, next: NextFu
 };
 
 export const addCharacter = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const {
+    Name,
+    Title,
+    Biography,
+    BirthDate,
+    DeathDate,
+    NationID,
+    ReligionID,
+    ImageURL
+  } = req.body;
+
+  if (!Name) {
+    res.status(400).json({ error: 'Name is required' });
+    return;
+  }
+
   try {
-    const { Name, Title, Biography, BirthDate, DeathDate, NationID, ReligionID, ImageURL } = req.body;
-    if (!Name) {
-      res.status(400).json({ error: 'Name is required' });
-      return;
-    }
+    console.log('Character data received:', { 
+      Name, 
+      ImageURL: ImageURL || 'No image provided'
+    });
 
     const pool = await connectDB();
     const result = await pool.request()
       .input('Name', sql.NVarChar(100), Name)
       .input('Title', sql.NVarChar(200), Title || null)
       .input('Biography', sql.NVarChar(sql.MAX), Biography || null)
-      .input('BirthDate', sql.NVarChar(100), BirthDate || null)
-      .input('DeathDate', sql.NVarChar(100), DeathDate || null)
+      .input('BirthDate', sql.NVarChar(100), BirthDate ? BirthDate.toString() : null)
+      .input('DeathDate', sql.NVarChar(100), DeathDate ? DeathDate.toString() : null)
       .input('NationID', sql.Int, NationID || null)
       .input('ReligionID', sql.Int, ReligionID || null)
       .input('ImageURL', sql.NVarChar(255), ImageURL || null)
@@ -98,8 +113,8 @@ export const updateCharacter = async (req: Request, res: Response): Promise<void
           .input('Name', sql.NVarChar(100), Name)
           .input('Title', sql.NVarChar(200), Title || null)
           .input('Biography', sql.NVarChar(sql.MAX), Biography || null)
-          .input('BirthDate', sql.NVarChar(100), BirthDate || null)
-          .input('DeathDate', sql.NVarChar(100), DeathDate || null)
+          .input('BirthDate', sql.NVarChar(100), BirthDate ? BirthDate.toString() : null)
+          .input('DeathDate', sql.NVarChar(100), DeathDate ? DeathDate.toString() : null)
           .input('NationID', sql.Int, NationID || null)
           .input('ReligionID', sql.Int, ReligionID || null)
           .input('ImageURL', sql.NVarChar(255), ImageURL || null)

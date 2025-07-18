@@ -13,30 +13,91 @@
 		ImageURL: null as string | null
 	};
 
-	async function handleSubmit() {
+	let imageFile: File | null = null;
+	let isSubmitting = false;
+	let uploadProgress = 0;
+	let imagePreview: string | null = null;
+
+	function handleImageChange(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (input.files && input.files[0]) {
+			imageFile = input.files[0];
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				imagePreview = e.target?.result as string;
+			};
+			reader.readAsDataURL(input.files[0]);
+			character.ImageURL = null;
+		}
+	}
+
+	async function uploadImage(): Promise<string | null> {
+		if (!imageFile) return null;
+
+		const formData = new FormData();
+		formData.append('image', imageFile);
+
 		try {
-			const formData = new FormData();
-			const fields: Record<keyof typeof character, (val: any) => string | null> = {
-				Name: (val: string) => val || null,
-				Title: (val: string) => val || null,
-				Biography: (val: string) => val || null,
-				NationID: (val: number | null) => val?.toString() || null,
-				ReligionID: (val: number | null) => val?.toString() || null,
-				BirthDate: (val: string | null) => val || null,
-				DeathDate: (val: string | null) => val || null,
-				ImageURL: (val: string | null) => (val && val.trim() !== '' ? val : null)
+			const uploadResponse = await fetch('http://localhost:5000/api/upload/character', {
+				method: 'POST',
+				body: formData,
+				credentials: 'include'
+			});
+
+			if (!uploadResponse.ok) {
+				const errorData = await uploadResponse.json();
+				throw new Error(errorData.error || 'Failed to upload image');
+			}
+
+			const uploadResult = await uploadResponse.json();
+			return uploadResult.filePath;
+		} catch (e) {
+			console.error('Image upload failed:', e);
+			throw new Error('Image upload failed');
+		}
+	}
+
+	async function handleSubmit() {
+		isSubmitting = true;
+		uploadProgress = 0;
+
+		if (!character.Name) {
+			alert('Character name is required');
+			isSubmitting = false;
+			return;
+		}
+
+		try {
+			let finalImageURL = character.ImageURL;
+
+			if (imageFile) {
+				uploadProgress = 30;
+				const uploadResult = await uploadImage();
+				finalImageURL = uploadResult || '';
+				uploadProgress = 60;
+				console.log('Image uploaded successfully, path:', finalImageURL);
+			}
+
+			const characterData = {
+				Name: character.Name,
+				Title: character.Title || null,
+				Biography: character.Biography || null,
+				NationID: character.NationID,
+				ReligionID: character.ReligionID,
+				BirthDate: character.BirthDate,
+				DeathDate: character.DeathDate,
+				ImageURL: finalImageURL || null
 			};
 
-			Object.entries(fields).forEach(([key, converter]) => {
-				const value = converter(character[key as keyof typeof character]);
-				if (value !== null) {
-					formData.append(key, value);
-				}
-			});
+			uploadProgress = 80;
 
 			const response = await fetch('http://localhost:5000/api/characters', {
 				method: 'POST',
-				body: formData
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(characterData),
+				credentials: 'include'
 			});
 
 			const result = await response.json();
@@ -45,11 +106,15 @@
 				throw new Error(result.error || 'Failed to add character');
 			}
 
+			uploadProgress = 100;
 			alert('Character added successfully!');
 			goto('/characters');
 		} catch (err) {
 			console.error('Error adding character:', err);
 			alert(err instanceof Error ? err.message : 'An unexpected error occurred');
+		} finally {
+			isSubmitting = false;
+			uploadProgress = 0;
 		}
 	}
 </script>
@@ -142,16 +207,58 @@
 			<label for="imageUpload" class="block text-sm font-medium text-gray-300 mb-1"
 				>Character Image</label
 			>
+			<div class="mb-3">
+				<input
+					type="file"
+					accept="image/*"
+					on:change={handleImageChange}
+					class="block w-full text-sm text-gray-400 p-1
+						file:mr-4 file:py-2 file:px-4
+						file:rounded file:border-0
+						file:text-sm file:font-semibold
+						file:bg-sky-700 file:text-white
+						hover:file:bg-sky-600"
+				/>
+				<p class="text-xs text-gray-400 mt-1">Max size: 5MB. Supported formats: JPG, PNG, GIF</p>
+			</div>
 			<input
 				type="text"
 				bind:value={character.ImageURL}
-				placeholder="Image URL (Optional)"
+				placeholder="Or enter Image URL"
 				class="input w-full p-2 border rounded mt-1"
 			/>
 		</div>
 
-		<button type="submit" class="button w-full p-2 bg-sky-700 text-white rounded hover:bg-sky-600">
-			Add Character
+		{#if imagePreview}
+			<div class="mb-4">
+				<h4 class="text-sm font-medium mb-1">Preview:</h4>
+				<img
+					src={imagePreview}
+					alt="Preview"
+					class="max-h-60 rounded-lg border border-gray-600 object-contain"
+				/>
+			</div>
+		{/if}
+
+		{#if uploadProgress > 0 && uploadProgress < 100}
+			<div class="mb-4">
+				<div class="w-full bg-gray-700 rounded-full h-2.5">
+					<div class="bg-blue-600 h-2.5 rounded-full" style={`width: ${uploadProgress}%`}></div>
+				</div>
+				<p class="text-xs text-center mt-1">Uploading... {uploadProgress}%</p>
+			</div>
+		{/if}
+
+		<button
+			type="submit"
+			class="button w-full p-2 bg-sky-700 text-white rounded hover:bg-sky-600"
+			disabled={isSubmitting}
+		>
+			{#if isSubmitting}
+				<span class="inline-block animate-spin mr-2">↻</span>Adding Character...
+			{:else}
+				Add Character
+			{/if}
 		</button>
 	</form>
 </div>

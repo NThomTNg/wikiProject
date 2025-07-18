@@ -3,6 +3,7 @@
 	import type { Character } from '$lib/types';
 	import ItemBox from '$lib/components/ItemBox.svelte';
 	import GridLayout from '$lib/components/GridLayout.svelte';
+	import { getImageUrl } from '$lib/utils/imageUtils';
 
 	let characters: Character[] = [];
 	let loading = true;
@@ -39,7 +40,7 @@
 			<ItemBox
 				href={`/characters/${character.CharacterID}`}
 				title={character.Name}
-				imageUrl={character.ImageURL}
+				imageUrl={getImageUrl(character.ImageURL)}
 			>
 				{#if character.Title}
 					<p class="text-white text-center mb-4">{character.Title}</p>

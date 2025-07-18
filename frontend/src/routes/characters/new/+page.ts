@@ -1,5 +1,4 @@
 import type { PageLoad } from './$types';
-import type { Character } from '$lib/types';
 
 export const load: PageLoad = async () => {
     try {

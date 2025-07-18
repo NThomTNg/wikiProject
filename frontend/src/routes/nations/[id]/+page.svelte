@@ -2,6 +2,7 @@
 	import type { Nation } from '$lib/types';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { getImageUrl } from '$lib/utils/imageUtils';
 
 	export let data: { nation?: Nation; error?: string };
 	const id = $page.params.id;
@@ -72,7 +73,7 @@
 			<div class="relative">
 				{#if data.nation.ImageURL}
 					<img
-						src={data.nation.ImageURL}
+						src={getImageUrl(data.nation.ImageURL)}
 						alt={data.nation.Name}
 						class="w-full h-auto rounded-lg shadow-lg max-h-[600px] object-cover"
 					/>

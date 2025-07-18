@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-router.post('/', upload.single('Image'), addCharacter); 
+router.post('/', addCharacter); 
 router.get('/', getCharacters);
 router.get('/:id', getCharacterById);
 router.delete('/:id', deleteCharacter);

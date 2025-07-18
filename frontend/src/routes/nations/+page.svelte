@@ -3,6 +3,7 @@
 	import type { Nation } from '$lib/types';
 	import ItemBox from '$lib/components/ItemBox.svelte';
 	import GridLayout from '$lib/components/GridLayout.svelte';
+	import { getImageUrl } from '$lib/utils/imageUtils';
 
 	let nations: Nation[] = [];
 	let loading = true;
@@ -36,7 +37,11 @@
 	</div>
 	<GridLayout>
 		{#each nations as nation}
-			<ItemBox href={`/nations/${nation.NationID}`} title={nation.Name} imageUrl={nation.ImageURL}>
+			<ItemBox
+				href={`/nations/${nation.NationID}`}
+				title={nation.Name}
+				imageUrl={getImageUrl(nation.ImageURL)}
+			>
 				{#if nation.Government}
 					<p class="text-white text-center mb-4">{nation.Government}</p>
 				{/if}

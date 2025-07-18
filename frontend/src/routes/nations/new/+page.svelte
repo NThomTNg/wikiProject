@@ -12,44 +12,113 @@
 		Culture: '',
 		Economy: '',
 		MilitaryStrength: '',
-		ImageURL: ''
+		ImageURL: null as string | null
 	};
 
-	async function handleSubmit() {
+	let imageFile: File | null = null;
+	let isSubmitting = false;
+	let uploadProgress = 0;
+	let imagePreview: string | null = null;
+
+	function handleImageChange(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (input.files && input.files[0]) {
+			imageFile = input.files[0];
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				imagePreview = e.target?.result as string;
+			};
+			reader.readAsDataURL(input.files[0]);
+			nation.ImageURL = null;
+		}
+	}
+
+	async function uploadImage(): Promise<string | null> {
+		if (!imageFile) return null;
+
+		const formData = new FormData();
+		formData.append('image', imageFile);
+
 		try {
+			const uploadResponse = await fetch('http://localhost:5000/api/upload/nation', {
+				method: 'POST',
+				body: formData,
+				credentials: 'include'
+			});
+
+			if (!uploadResponse.ok) {
+				const errorData = await uploadResponse.json();
+				throw new Error(errorData.error || 'Failed to upload image');
+			}
+
+			const uploadResult = await uploadResponse.json();
+			return uploadResult.filePath;
+		} catch (e) {
+			console.error('Image upload failed:', e);
+			throw new Error('Image upload failed');
+		}
+	}
+
+	async function handleSubmit() {
+		isSubmitting = true;
+		uploadProgress = 0;
+
+		if (!nation.Name) {
+			alert('Nation name is required');
+			isSubmitting = false;
+			return;
+		}
+
+		try {
+			let finalImageURL = nation.ImageURL;
+
+			if (imageFile) {
+				uploadProgress = 30;
+				const uploadResult = await uploadImage();
+				finalImageURL = uploadResult || '';
+				uploadProgress = 60;
+				console.log('Image uploaded successfully, path:', finalImageURL);
+			}
+
 			const nationData = {
 				Name: nation.Name,
-				Government: nation.Government,
+				Government: nation.Government || null,
 				CapitalLocationID: nation.CapitalLocationID,
-				Description: nation.Description,
-				FoundingDate: nation.FoundingDate,
+				Description: nation.Description || null,
+				FoundingDate: nation.FoundingDate || null,
 				MajorReligionID: nation.MajorReligionID,
-				Culture: nation.Culture,
-				Economy: nation.Economy,
-				MilitaryStrength: nation.MilitaryStrength,
-				ImageURL: nation.ImageURL
+				Culture: nation.Culture || null,
+				Economy: nation.Economy || null,
+				MilitaryStrength: nation.MilitaryStrength || null,
+				ImageURL: finalImageURL || null
 			};
+
+			uploadProgress = 80;
 
 			const response = await fetch('http://localhost:5000/api/nations', {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json',
-					Accept: 'application/json'
+					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify(nationData)
+				body: JSON.stringify(nationData),
+				credentials: 'include'
 			});
 
 			const result = await response.json();
 
 			if (!response.ok) {
-				throw new Error(result.message || result.error || 'Failed to add nation');
+				throw new Error(result.error || 'Failed to add nation');
 			}
 
+			uploadProgress = 100;
 			alert('Nation added successfully!');
 			goto('/nations');
 		} catch (err) {
 			console.error('Error adding nation:', err);
 			alert(err instanceof Error ? err.message : 'An unexpected error occurred');
+		} finally {
+			isSubmitting = false;
+			uploadProgress = 0;
 		}
 	}
 </script>
@@ -159,19 +228,61 @@
 		</div>
 
 		<div class="mb-4">
-			<label for="imageUrl" class="block text-sm font-medium text-gray-300 mb-1">Nation Image</label
+			<label for="imageUpload" class="block text-sm font-medium text-gray-300 mb-1"
+				>Nation Image</label
 			>
+			<div class="mb-3">
+				<input
+					type="file"
+					accept="image/*"
+					on:change={handleImageChange}
+					class="block w-full text-sm text-gray-400 p-1
+						file:mr-4 file:py-2 file:px-4
+						file:rounded file:border-0
+						file:text-sm file:font-semibold
+						file:bg-sky-700 file:text-white
+						hover:file:bg-sky-600"
+				/>
+				<p class="text-xs text-gray-400 mt-1">Max size: 5MB. Supported formats: JPG, PNG, GIF</p>
+			</div>
 			<input
-				id="imageUrl"
 				type="text"
 				bind:value={nation.ImageURL}
-				placeholder="Image URL"
+				placeholder="Or enter Image URL"
 				class="input w-full p-2 border rounded mt-1"
 			/>
 		</div>
 
-		<button type="submit" class="button w-full p-2 bg-sky-700 text-white rounded hover:bg-sky-600">
-			Add Nation
+		{#if imagePreview}
+			<div class="mb-4">
+				<h4 class="text-sm font-medium mb-1">Preview:</h4>
+				<img
+					src={imagePreview}
+					alt="Preview"
+					class="max-h-60 rounded-lg border border-gray-600 object-contain"
+				/>
+			</div>
+		{/if}
+
+		{#if uploadProgress > 0 && uploadProgress < 100}
+			<div class="mb-4">
+				<div class="w-full bg-gray-700 rounded-full h-2.5">
+					<div class="bg-blue-600 h-2.5 rounded-full" style={`width: ${uploadProgress}%`}></div>
+				</div>
+				<p class="text-xs text-center mt-1">Uploading... {uploadProgress}%</p>
+			</div>
+		{/if}
+
+		<button
+			type="submit"
+			class="button w-full p-2 bg-sky-700 text-white rounded hover:bg-sky-600"
+			disabled={isSubmitting}
+		>
+			{#if isSubmitting}
+				<span class="inline-block animate-spin mr-2">↻</span>Adding Nation...
+			{:else}
+				Add Nation
+			{/if}
 		</button>
 	</form>
 </div>

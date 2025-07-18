@@ -26,6 +26,18 @@ if (!fs.existsSync(religionsUploadsDir)) {
     fs.mkdirSync(religionsUploadsDir, { recursive: true });
 }
 
+const charactersUploadsDir = path.join(uploadsDir, 'characters');
+if (!fs.existsSync(charactersUploadsDir)) {
+    console.log(`Creating characters uploads directory at: ${charactersUploadsDir}`);
+    fs.mkdirSync(charactersUploadsDir, { recursive: true });
+}
+
+const nationsUploadsDir = path.join(uploadsDir, 'nations');
+if (!fs.existsSync(nationsUploadsDir)) {
+    console.log(`Creating nations uploads directory at: ${nationsUploadsDir}`);
+    fs.mkdirSync(nationsUploadsDir, { recursive: true });
+}
+
 const religionStorage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, religionsUploadsDir);
@@ -39,6 +51,52 @@ const religionStorage = multer.diskStorage({
 
 const religionUpload = multer({ 
     storage: religionStorage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed'));
+        }
+    }
+});
+
+const characterStorage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, charactersUploadsDir);
+    },
+    filename: function(req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        cb(null, 'character-' + uniqueSuffix + ext);
+    }
+});
+
+const characterUpload = multer({ 
+    storage: characterStorage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed'));
+        }
+    }
+});
+
+const nationStorage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, nationsUploadsDir);
+    },
+    filename: function(req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        cb(null, 'nation-' + uniqueSuffix + ext);
+    }
+});
+
+const nationUpload = multer({ 
+    storage: nationStorage,
     limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith('image/')) {
@@ -97,6 +155,34 @@ app.post('/api/upload/religion', religionUpload.single('image'), (req, res) => {
     }
     
     const filePath = `/uploads/religions/${req.file.filename}`;
+    res.json({ 
+        success: true, 
+        filePath: filePath,
+        fileName: req.file.filename
+    });
+});
+
+app.post('/api/upload/character', characterUpload.single('image'), (req, res) => {
+    if (!req.file) {
+        res.status(400).json({ error: 'No file uploaded' });
+        return;
+    }
+    
+    const filePath = `/uploads/characters/${req.file.filename}`;
+    res.json({ 
+        success: true, 
+        filePath: filePath,
+        fileName: req.file.filename
+    });
+});
+
+app.post('/api/upload/nation', nationUpload.single('image'), (req, res) => {
+    if (!req.file) {
+        res.status(400).json({ error: 'No file uploaded' });
+        return;
+    }
+    
+    const filePath = `/uploads/nations/${req.file.filename}`;
     res.json({ 
         success: true, 
         filePath: filePath,

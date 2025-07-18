@@ -62,6 +62,11 @@ export const addNation = async (req: Request, res: Response, next: NextFunction)
     }
 
     try {
+        console.log('Nation data received:', { 
+            Name, 
+            ImageURL: ImageURL || 'No image provided'
+        });
+
         const pool = await connectDB();
         const result = await pool.request()
             .input('Name', sql.NVarChar(100), Name)
@@ -78,12 +83,12 @@ export const addNation = async (req: Request, res: Response, next: NextFunction)
                 INSERT INTO Nations (
                     Name, Government, CapitalLocationID, Description, 
                     FoundingDate, MajorReligionID, Culture, Economy, 
-                    MilitaryStrength, CreatedDate, LastModifiedDate
+                    MilitaryStrength, ImageURL, CreatedDate, LastModifiedDate
                 )
                 VALUES (
                     @Name, @Government, @CapitalLocationID, @Description,
                     @FoundingDate, @MajorReligionID, @Culture, @Economy,
-                    @MilitaryStrength, GETDATE(), GETDATE()
+                    @MilitaryStrength, @ImageURL, GETDATE(), GETDATE()
                 );
                 SELECT SCOPE_IDENTITY() AS NationID;
             `);
