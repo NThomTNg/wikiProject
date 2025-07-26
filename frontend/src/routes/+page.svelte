@@ -28,8 +28,10 @@
 </script>
 
 <div class="relative z-10 text-center mb-20">
-	<h1 class="text-4xl font-bold mt-10 mb-4 text-white">Welcome to the world of Andaren</h1>
-	<p class="text-xl text-gray-300">
+	<h1 class="text-4xl font-bold font-serif mt-10 mb-4 text-white">
+		Welcome to the world of Andaren
+	</h1>
+	<p class="text-xl font-serif text-gray-300">
 		Explore the world of Andaren with its rich history, diverse cultures, and unique locations.
 	</p>
 </div>
@@ -37,7 +39,7 @@
 <div class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 pb-10">
 	{#each images as { Image, title }}
 		<div
-			class="relative rounded-lg overflow-hidden shadow-lg transition-transform transform hover:-translate-y-1 hover:scale-110 hover:shadow-lg hover:shadow-blue-400/30"
+			class="relative border border-sky-800 rounded-lg overflow-hidden shadow-lg transition-transform transform hover:-translate-y-1 hover:scale-110 hover:shadow-lg hover:shadow-blue-400/30"
 		>
 			<a
 				href={title === 'Characters'
@@ -50,12 +52,15 @@
 								? '/religions'
 								: title === 'Events'
 									? '/events'
-									: Image}
+									: title === 'Maps'
+										? '/maps'
+										: Image}
 				target={title === 'Characters' ||
 				title === 'Nations' ||
 				title === 'Locations' ||
 				title === 'Religions' ||
-				title === 'Events'
+				title === 'Events' ||
+				title === 'Maps'
 					? '_self'
 					: '_blank'}
 				class="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group"
@@ -76,4 +81,24 @@
 			</a>
 		</div>
 	{/each}
+</div>
+
+<div class="flex flex-col md:flex-row gap-6 mt-10 mb-5 max-w-6xl mx-auto">
+	<div
+		class="bg-amber-50 border border-black rounded-md p-3 shadow-md font-serif text-justify flex-1"
+	>
+		The World of Andaren is filled with rich history and diverse cultures. Explore its nations,
+		characters, and locations to uncover the stories that shape this vibrant world. The history
+		spans millennia, with each era contributing to the tapestry of Andaren's past. From the rise and
+		fall of empires to the legends of heroes and gods, every entry in in the history section offers
+		a glimpse into the events that have shaped this world. Browse the wiki to learn more about the
+		fascinating history of Andaren and its people.
+	</div>
+	<div
+		class="bg-amber-50 border border-black rounded-md p-3 shadow-md font-serif text-justify flex-1"
+	>
+		You can also add in new wiki entries to expand the lore and share your own stories within this
+		world with the easy wiki features. Add in lore and pictures to enrich the world and its history.
+		Feel free to contribute and help build the world of Andaren together with the community.
+	</div>
 </div>

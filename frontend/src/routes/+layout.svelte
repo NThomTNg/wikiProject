@@ -5,16 +5,6 @@
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
 	}
-
-	const navItems = [
-		{ href: '/', label: 'Home' },
-		{ href: '/characters', label: 'Characters' },
-		{ href: '/nations', label: 'Nations' },
-		{ href: '/locations', label: 'Locations' },
-		{ href: '/religions', label: 'Religions' },
-		{ href: '/events', label: 'Events' },
-		{ href: '/history', label: 'History' }
-	];
 </script>
 
 <div
@@ -23,7 +13,10 @@
 >
 	<div class="absolute inset-0 bg-black opacity-50"></div>
 
-	<nav class="fixed top-0 left-0 h-full z-20 bg-slate-600 shadow w-60" aria-label="Main Navigation">
+	<nav
+		class="fixed top-0 left-0 h-full z-20 bg-slate-600 shadow w-60 border-2 border-slate-900"
+		aria-label="Main Navigation"
+	>
 		<div class="flex flex-col h-full">
 			<div class="flex items-center justify-between h-16 px-4">
 				<a href="/" class="flex-shrink-0 flex items-center">
