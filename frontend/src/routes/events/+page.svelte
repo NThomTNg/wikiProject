@@ -21,7 +21,41 @@
 			}
 			const data = await response.json();
 			events = data.data || data || [];
+			console.log('Events data loaded:', events);
+			console.log(
+				'First event timeline data:',
+				events[0]
+					? {
+							TimelinePeriod: events[0].TimelinePeriod,
+							StartYear: events[0].StartYear,
+							EndYear: events[0].EndYear
+						}
+					: 'No events'
+			);
+
+			const timelineOrder = [
+				'Birth Age',
+				'Argoneasian Age',
+				'Migration Era',
+				'Fourth Era',
+				'Breaking Age',
+				'Fifth Era'
+			];
+
 			events.sort((a, b) => {
+				const aTimelineIndex = a.TimelinePeriod ? timelineOrder.indexOf(a.TimelinePeriod) : 999;
+				const bTimelineIndex = b.TimelinePeriod ? timelineOrder.indexOf(b.TimelinePeriod) : 999;
+
+				if (aTimelineIndex !== bTimelineIndex) {
+					return aTimelineIndex - bTimelineIndex;
+				}
+
+				if (a.StartYear && b.StartYear) {
+					return a.StartYear - b.StartYear;
+				}
+				if (a.StartYear) return -1;
+				if (b.StartYear) return 1;
+
 				if (!a.EventDate) return 1;
 				if (!b.EventDate) return -1;
 				return a.EventDate.localeCompare(b.EventDate);
@@ -109,7 +143,7 @@
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 			{#each events as event}
 				<div
-					class="bg-slate-800 bg-opacity-40 border border-black rounded-lg p-4 cursor-pointer transition-all duration-300 transform hover:-translate-y-1"
+					class="bg-amber-50 border border-black rounded-md p-4 my-3 shadow-md overflow-y-auto font-serif text-justifytransition-all duration-300 transform hover:-translate-y-1"
 					on:click={() => viewEvent(event)}
 					on:keypress={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') {
@@ -121,28 +155,34 @@
 					aria-label={`View details for event ${event.Title}`}
 				>
 					<div class="p-6">
-						<h2 class="text-xl font-semibold text-white mb-2">{event.Title}</h2>
-						{#if event.EventDate}
-							<p class="text-gray-400 mb-2">{event.EventDate}</p>
+						<h2 class="text-xl font-semibold mb-2">{event.Title}</h2>
+						{#if event.TimelinePeriod}
+							<p class="mb-2 text-sky-600 font-medium">{event.TimelinePeriod}</p>
+						{:else if event.StartYear}
+							<p class="mb-2 text-sky-600 font-medium">
+								Year {event.StartYear}{event.EndYear ? ` - ${event.EndYear}` : ''}
+							</p>
+						{:else if event.EventDate}
+							<p class="mb-2">{event.EventDate}</p>
 						{/if}
 						{#if event.Description}
-							<p class="text-gray-300 line-clamp-3">
+							<p class="line-clamp-3">
 								{event.Description}
 							</p>
 						{:else}
-							<p class="text-gray-500 italic">No description</p>
+							<p class="italic">No description</p>
 						{/if}
 					</div>
 					<div class="px-6 py-3 flex justify-between items-center">
 						<div>
 							{#if event.NationName}
-								<span class="text-sm text-blue-400">{event.NationName}</span>
+								<span class="text-sm">{event.NationName}</span>
 							{/if}
 							{#if event.NationName && event.LocationName}
-								<span class="text-gray-500 mx-1">•</span>
+								<span class=" mx-1">•</span>
 							{/if}
 							{#if event.LocationName}
-								<span class="text-sm text-blue-400">{event.LocationName}</span>
+								<span class="text-sm">{event.LocationName}</span>
 							{/if}
 						</div>
 					</div>

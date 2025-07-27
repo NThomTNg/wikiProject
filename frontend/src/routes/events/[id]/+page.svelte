@@ -3,57 +3,23 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { EventWithRelations } from '$lib/types';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 
 	const id = $page.params.id;
-	let event: EventWithRelations | null = null;
-	let loading = true;
+	let event: EventWithRelations | null = data.event;
+	let loading = false;
 	let error: string | null = null;
 
-	onMount(async () => {
-		await fetchEventDetails();
-	});
-
-	async function fetchEventDetails() {
-		loading = true;
-		error = null;
-		console.log(`Fetching event details for ID: ${id}`);
-
-		try {
-			const response = await fetch(`http://localhost:5000/api/events/${id}?t=${Date.now()}`);
-			console.log('Response status:', response.status);
-
-			if (!response.ok) {
-				if (response.status === 404) {
-					throw new Error('Event not found');
-				}
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-
-			const responseText = await response.text();
-			console.log('Response text:', responseText);
-
-			let data;
-			try {
-				data = JSON.parse(responseText);
-				console.log('Parsed data:', data);
-			} catch (parseError) {
-				console.error('Error parsing response:', parseError);
-				throw new Error(`Failed to parse response: ${responseText}`);
-			}
-
-			if (data && (data.data || data)) {
-				event = data.data || data;
-				console.log('Event data loaded:', event);
-			} else {
-				throw new Error('Invalid response format or empty data');
-			}
-		} catch (e) {
-			console.error('Error fetching event:', e);
-			error = e instanceof Error ? e.message : String(e);
-		} finally {
-			loading = false;
+	onMount(() => {
+		console.log('Component mounted - Event data:', event);
+		if (event) {
+			console.log('Component - TimelinePeriod:', event.TimelinePeriod);
+			console.log('Component - StartYear:', event.StartYear);
+			console.log('Component - EndYear:', event.EndYear);
 		}
-	}
+	});
 
 	function formatDate(dateString: string | null | undefined): string {
 		if (!dateString) return 'Unknown date';
@@ -149,7 +115,15 @@
 				</div>
 
 				<div class="mb-6 text-lg text-blue-300 font-semibold">
-					{formatDate(event.EventDate)}
+					{#if event.TimelinePeriod}
+						{event.TimelinePeriod}
+					{:else if event.StartYear}
+						Year {event.StartYear}{event.EndYear ? ` - ${event.EndYear}` : ''}
+					{:else if event.EventDate}
+						{formatDate(event.EventDate)}
+					{:else}
+						Unknown period
+					{/if}
 				</div>
 
 				{#if event.NationName || event.LocationName}

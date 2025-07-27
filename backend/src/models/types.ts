@@ -70,6 +70,9 @@ export interface Event {
   Title: string;
   Description?: string | null;
   EventDate?: string | null;
+  TimelinePeriod?: string | null;
+  StartYear?: number | null;
+  EndYear?: number | null;
   LocationID?: number | null;
   NationID?: number | null;
   CreatedDate: Date;

@@ -5,6 +5,32 @@
 	export let onEventClick: (event: EventWithRelations) => void;
 
 	$: sortedEvents = [...events].sort((a, b) => {
+		// Define timeline period order
+		const timelineOrder = [
+			'Birth Age',
+			'Argoneasian Age',
+			'Migration Era',
+			'Fourth Era',
+			'Breaking Age',
+			'Fifth Era'
+		];
+
+		// First, sort by timeline period order
+		const aTimelineIndex = a.TimelinePeriod ? timelineOrder.indexOf(a.TimelinePeriod) : 999;
+		const bTimelineIndex = b.TimelinePeriod ? timelineOrder.indexOf(b.TimelinePeriod) : 999;
+
+		if (aTimelineIndex !== bTimelineIndex) {
+			return aTimelineIndex - bTimelineIndex;
+		}
+
+		// If same timeline period, sort by StartYear
+		if (a.StartYear && b.StartYear) {
+			return a.StartYear - b.StartYear;
+		}
+		if (a.StartYear) return -1;
+		if (b.StartYear) return 1;
+
+		// Fallback to EventDate
 		if (!a.EventDate) return 1;
 		if (!b.EventDate) return -1;
 		return a.EventDate.localeCompare(b.EventDate);
@@ -36,31 +62,33 @@
                 w-10/1 md:w-5/12"
 			>
 				<div
-					class="bg-slate-800 bg-opacity-40 border border-black rounded-lg p-4 cursor-pointer transition-all duration-300 transform hover:-translate-y-1"
+					class="bg-amber-50 border border-black rounded-md p-4 my-3 shadow-md overflow-y-auto font-serif text-justify text-gray-800 transition-all duration-300 transform hover:-translate-y-1"
 				>
-					<h2 class="text-xl font-semibold text-white mb-2">{event.Title}</h2>
+					<h2 class="text-xl font-semibold mb-2">{event.Title}</h2>
 
-					{#if event.EventDate}
-						<p class="text-blue-400 font-medium mb-2">{event.EventDate}</p>
-					{/if}
+					<div>
+						{#if event.TimelinePeriod}
+							<p class="mb-2 text-sky-600 font-medium">{event.TimelinePeriod}</p>
+						{/if}
+					</div>
 
 					{#if event.Description}
-						<p class="text-gray-300 line-clamp-3">
+						<p class=" line-clamp-3">
 							{event.Description}
 						</p>
 					{:else}
-						<p class="text-gray-500 italic">No description</p>
+						<p class=" italic">No description</p>
 					{/if}
 
 					<div class="mt-3 flex flex-wrap items-center text-sm">
 						{#if event.NationName}
-							<span class="text-blue-400 mr-2">{event.NationName}</span>
+							<span class="mr-2">{event.NationName}</span>
 						{/if}
 						{#if event.NationName && event.LocationName}
-							<span class="text-gray-500 mx-1">•</span>
+							<span class=" mx-1">•</span>
 						{/if}
 						{#if event.LocationName}
-							<span class="text-blue-400">{event.LocationName}</span>
+							<span>{event.LocationName}</span>
 						{/if}
 					</div>
 				</div>

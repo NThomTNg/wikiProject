@@ -7,13 +7,13 @@ export const getEvents = async (req: Request, res: Response) => {
         const pool = await connectDB();
         
         const result = await pool.request().query(`
-            SELECT e.EventID, e.Title, e.Description, e.EventDate, e.LocationID, e.NationID, 
+            SELECT e.EventID, e.Title, e.Description, e.EventDate, e.TimelinePeriod, e.StartYear, e.EndYear, e.LocationID, e.NationID, 
             e.CreatedDate, e.LastModifiedDate,
             l.Name as LocationName, n.Name as NationName
             FROM Events e
             LEFT JOIN Locations l ON e.LocationID = l.LocationID
             LEFT JOIN Nations n ON e.NationID = n.NationID
-            ORDER BY e.EventDate
+            ORDER BY e.StartYear, e.EventDate
         `);
         
         res.json({ data: result.recordset });
@@ -33,7 +33,8 @@ export const getEventById = async (req: Request, res: Response): Promise<void> =
             .request()
             .input('id', sql.Int, req.params.id)
             .query(`
-                SELECT e.*, l.Name as LocationName, n.Name as NationName
+                SELECT e.EventID, e.Title, e.Description, e.EventDate, e.TimelinePeriod, e.StartYear, e.EndYear, e.LocationID, e.NationID,
+                e.CreatedDate, e.LastModifiedDate, l.Name as LocationName, n.Name as NationName
                 FROM Events e
                 LEFT JOIN Locations l ON e.LocationID = l.LocationID
                 LEFT JOIN Nations n ON e.NationID = n.NationID
@@ -57,9 +58,23 @@ export const addEvent = async (req: Request, res: Response): Promise<void> => {
         Title,
         Description,
         EventDate,
+        TimelinePeriod,
+        StartYear,
+        EndYear,
         LocationID,
         NationID
     } = req.body;
+
+    console.log('Received event data:', {
+        Title,
+        Description,
+        EventDate,
+        TimelinePeriod,
+        StartYear,
+        EndYear,
+        LocationID,
+        NationID
+    });
 
     if (!Title) {
         res.status(400).json({ error: 'Title is required' });
@@ -72,15 +87,18 @@ export const addEvent = async (req: Request, res: Response): Promise<void> => {
             .input('Title', sql.NVarChar(200), Title)
             .input('Description', sql.NVarChar(sql.MAX), Description)
             .input('EventDate', sql.NVarChar(100), EventDate)
+            .input('TimelinePeriod', sql.NVarChar(100), TimelinePeriod)
+            .input('StartYear', sql.Int, StartYear || null)
+            .input('EndYear', sql.Int, EndYear || null)
             .input('LocationID', sql.Int, LocationID || null)
             .input('NationID', sql.Int, NationID || null)
             .query(`
                 INSERT INTO Events (
-                    Title, Description, EventDate, LocationID, 
+                    Title, Description, EventDate, TimelinePeriod, StartYear, EndYear, LocationID, 
                     NationID, CreatedDate, LastModifiedDate
                 )
                 VALUES (
-                    @Title, @Description, @EventDate, @LocationID,
+                    @Title, @Description, @EventDate, @TimelinePeriod, @StartYear, @EndYear, @LocationID,
                     @NationID, GETDATE(), GETDATE()
                 );
                 SELECT SCOPE_IDENTITY() AS EventID;
@@ -100,9 +118,24 @@ export const updateEvent = async (req: Request, res: Response): Promise<void> =>
         Title,
         Description,
         EventDate,
+        TimelinePeriod,
+        StartYear,
+        EndYear,
         LocationID,
         NationID
     } = req.body;
+
+    console.log('Updating event with data:', {
+        eventId,
+        Title,
+        Description,
+        EventDate,
+        TimelinePeriod,
+        StartYear,
+        EndYear,
+        LocationID,
+        NationID
+    });
 
     if (!Title) {
         res.status(400).json({ error: 'Title is required' });
@@ -116,6 +149,9 @@ export const updateEvent = async (req: Request, res: Response): Promise<void> =>
             .input('Title', sql.NVarChar(200), Title)
             .input('Description', sql.NVarChar(sql.MAX), Description)
             .input('EventDate', sql.NVarChar(100), EventDate)
+            .input('TimelinePeriod', sql.NVarChar(100), TimelinePeriod)
+            .input('StartYear', sql.Int, StartYear || null)
+            .input('EndYear', sql.Int, EndYear || null)
             .input('LocationID', sql.Int, LocationID || null)
             .input('NationID', sql.Int, NationID || null)
             .query(`
@@ -123,6 +159,9 @@ export const updateEvent = async (req: Request, res: Response): Promise<void> =>
                 SET Title = @Title,
                     Description = @Description,
                     EventDate = @EventDate,
+                    TimelinePeriod = @TimelinePeriod,
+                    StartYear = @StartYear,
+                    EndYear = @EndYear,
                     LocationID = @LocationID,
                     NationID = @NationID,
                     LastModifiedDate = GETDATE()

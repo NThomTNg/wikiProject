@@ -44,7 +44,7 @@
 		<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 			{#each data.religions as religion}
 				<div
-					class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+					class="bg-gray-800 rounded-lg overflow-hidden border border-black shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
 					on:click={() => goto(`/religions/${religion.ReligionID}`)}
 					on:keydown={(e) => e.key === 'Enter' && goto(`/religions/${religion.ReligionID}`)}
 					role="button"

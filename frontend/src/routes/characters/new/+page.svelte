@@ -221,17 +221,11 @@
 				/>
 				<p class="text-xs text-gray-400 mt-1">Max size: 5MB. Supported formats: JPG, PNG, GIF</p>
 			</div>
-			<input
-				type="text"
-				bind:value={character.ImageURL}
-				placeholder="Or enter Image URL"
-				class="input w-full p-2 border rounded mt-1"
-			/>
 		</div>
 
 		{#if imagePreview}
 			<div class="mb-4">
-				<h4 class="text-sm font-medium mb-1">Preview:</h4>
+				<h4 class="text-sm text-white font-medium mb-1">Preview:</h4>
 				<img
 					src={imagePreview}
 					alt="Preview"

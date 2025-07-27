@@ -3,9 +3,61 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { getImageUrl } from '$lib/utils/imageUtils';
+	import { onMount } from 'svelte';
 
 	export let data: { nation?: Nation; error?: string };
+
+	let capitalLocationName = '';
+	let majorReligionName = '';
 	const id = $page.params.id;
+
+	onMount(async () => {
+		if (data.nation) {
+			if (data.nation.CapitalLocationID) {
+				try {
+					const response = await fetch(
+						`http://localhost:5000/api/locations/${data.nation.CapitalLocationID}`,
+						{
+							credentials: 'include'
+						}
+					);
+					if (response.ok) {
+						const result = await response.json();
+						const location = result.data || result;
+						capitalLocationName = location.Name || location.name || 'Unknown';
+					} else {
+						console.error('Failed to fetch capital location, status:', response.status);
+						capitalLocationName = 'Unknown';
+					}
+				} catch (error) {
+					console.error('Failed to fetch capital location:', error);
+					capitalLocationName = 'Unknown';
+				}
+			}
+
+			if (data.nation.MajorReligionID) {
+				try {
+					const response = await fetch(
+						`http://localhost:5000/api/religions/${data.nation.MajorReligionID}`,
+						{
+							credentials: 'include'
+						}
+					);
+					if (response.ok) {
+						const result = await response.json();
+						const religion = result.data || result;
+						majorReligionName = religion.Name || religion.name || 'Unknown';
+					} else {
+						console.error('Failed to fetch major religion, status:', response.status);
+						majorReligionName = 'Unknown';
+					}
+				} catch (error) {
+					console.error('Failed to fetch major religion:', error);
+					majorReligionName = 'Unknown';
+				}
+			}
+		}
+	});
 
 	function formatDate(date?: string | null): string {
 		if (!date) return 'Unknown';
@@ -124,16 +176,16 @@
 					</div>
 
 					<div class="grid grid-cols-2 gap-4">
-						{#if data.nation.CapitalLocationID}
+						{#if capitalLocationName}
 							<div>
-								<span class="text-gray-600 dark:text-gray-400">Capital Location ID:</span>
-								<span class="ml-2">{data.nation.CapitalLocationID}</span>
+								<span class="text-gray-600 dark:text-gray-400">Capital:</span>
+								<span class="ml-2 text-white">{capitalLocationName}</span>
 							</div>
 						{/if}
-						{#if data.nation.MajorReligionID}
+						{#if majorReligionName}
 							<div>
-								<span class="text-gray-600 dark:text-gray-400">Major Religion ID:</span>
-								<span class="ml-2">{data.nation.MajorReligionID}</span>
+								<span class="text-gray-600 dark:text-gray-400">Major Religion:</span>
+								<span class="ml-2 text-white">{majorReligionName}</span>
 							</div>
 						{/if}
 					</div>

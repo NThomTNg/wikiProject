@@ -194,18 +194,6 @@
 				</select>
 			</div>
 
-			<div>
-				<label for="imageURL" class="block text-sm font-medium text-slate-300 mb-1">Image URL</label
-				>
-				<input
-					type="text"
-					id="imageURL"
-					bind:value={historyData.ImageURL}
-					class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
-					placeholder="https://example.com/image.jpg"
-				/>
-			</div>
-
 			<div class="col-span-2">
 				<label for="content" class="block text-sm font-medium text-slate-300 mb-1">Content</label>
 				<textarea

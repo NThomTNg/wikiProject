@@ -3,9 +3,61 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { getImageUrl } from '$lib/utils/imageUtils';
+	import { onMount } from 'svelte';
 
 	export let data: { character?: Character; error?: string };
+
+	let nationName = '';
+	let religionName = '';
 	const id = $page.params.id;
+
+	onMount(async () => {
+		if (data.character) {
+			if (data.character.NationID) {
+				try {
+					const response = await fetch(
+						`http://localhost:5000/api/nations/${data.character.NationID}`,
+						{
+							credentials: 'include'
+						}
+					);
+					if (response.ok) {
+						const result = await response.json();
+						const nation = result.data || result;
+						nationName = nation.Name || nation.name || 'Unknown';
+					} else {
+						console.error('Failed to fetch nation, status:', response.status);
+						nationName = 'Unknown';
+					}
+				} catch (error) {
+					console.error('Failed to fetch nation:', error);
+					nationName = 'Unknown';
+				}
+			}
+
+			if (data.character.ReligionID) {
+				try {
+					const response = await fetch(
+						`http://localhost:5000/api/religions/${data.character.ReligionID}`,
+						{
+							credentials: 'include'
+						}
+					);
+					if (response.ok) {
+						const result = await response.json();
+						const religion = result.data || result;
+						religionName = religion.Name || religion.name || 'Unknown';
+					} else {
+						console.error('Failed to fetch religion, status:', response.status);
+						religionName = 'Unknown';
+					}
+				} catch (error) {
+					console.error('Failed to fetch religion:', error);
+					religionName = 'Unknown';
+				}
+			}
+		}
+	});
 
 	function formatDate(date?: string | null): string {
 		if (!date) return 'Unknown';
@@ -118,16 +170,16 @@
 					{/if}
 
 					<div class="grid grid-cols-2 gap-4">
-						{#if data.character.NationID}
+						{#if nationName}
 							<div>
-								<span class="text-gray-600 dark:text-gray-400">Nation ID:</span>
-								<span class="ml-2">{data.character.NationID}</span>
+								<span class="text-gray-600 dark:text-gray-400">Nation:</span>
+								<span class="ml-2 text-white">{nationName}</span>
 							</div>
 						{/if}
-						{#if data.character.ReligionID}
+						{#if religionName}
 							<div>
-								<span class="text-gray-600 dark:text-gray-400">Religion ID:</span>
-								<span class="ml-2">{data.character.ReligionID}</span>
+								<span class="text-gray-600 dark:text-gray-400">Religion:</span>
+								<span class="ml-2 text-white">{religionName}</span>
 							</div>
 						{/if}
 					</div>

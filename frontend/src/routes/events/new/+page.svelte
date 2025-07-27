@@ -12,9 +12,20 @@
 
 	let title = '';
 	let description = '';
-	let eventDate = '';
+	let timelinePeriod = '';
+	let startYear = '';
+	let endYear = '';
 	let locationId: number | null = null;
 	let nationId: number | null = null;
+
+	const timelinePeriods = [
+		'Birth Age',
+		'Argoneasian Age',
+		'Migration Era',
+		'Fourth Era',
+		'Breaking Age',
+		'Fifth Era'
+	];
 
 	onMount(async () => {
 		await fetchFormData();
@@ -60,7 +71,9 @@
 			const eventData = {
 				Title: title,
 				Description: description || null,
-				EventDate: eventDate || null,
+				TimelinePeriod: timelinePeriod || null,
+				StartYear: startYear ? Number(startYear) : null,
+				EndYear: endYear ? Number(endYear) : null,
 				LocationID: locationId !== null && locationId !== undefined ? Number(locationId) : null,
 				NationID: nationId !== null && nationId !== undefined ? Number(nationId) : null
 			};
@@ -157,17 +170,40 @@
 		</div>
 
 		<div class="mb-4">
-			<label for="eventDate" class="block text-white font-medium mb-2">Event Date</label>
-			<input
-				id="eventDate"
-				type="text"
-				bind:value={eventDate}
-				placeholder="e.g., 1242, January 1242, or 01/15/1242"
+			<label for="timelinePeriod" class="block text-white font-medium mb-2">Timeline Period</label>
+			<select
+				id="timelinePeriod"
+				bind:value={timelinePeriod}
 				class="input w-full p-2 border rounded bg-slate-800 text-white border-slate-600"
-			/>
-			<p class="mt-1 text-sm text-gray-400">
-				Format: Year (e.g. 1242), Month and Year, or specific date
-			</p>
+			>
+				<option value="">-- Select Period --</option>
+				{#each timelinePeriods as period}
+					<option value={period}>{period}</option>
+				{/each}
+			</select>
+		</div>
+
+		<div class="grid grid-cols-2 gap-4 mb-4">
+			<div>
+				<label for="startYear" class="block text-white font-medium mb-2">Start Year</label>
+				<input
+					id="startYear"
+					type="number"
+					bind:value={startYear}
+					placeholder="e.g., 1242"
+					class="input w-full p-2 border rounded bg-slate-800 text-white border-slate-600"
+				/>
+			</div>
+			<div>
+				<label for="endYear" class="block text-white font-medium mb-2">End Year (Optional)</label>
+				<input
+					id="endYear"
+					type="number"
+					bind:value={endYear}
+					placeholder="e.g., 1245"
+					class="input w-full p-2 border rounded bg-slate-800 text-white border-slate-600"
+				/>
+			</div>
 		</div>
 
 		<div class="mb-4">

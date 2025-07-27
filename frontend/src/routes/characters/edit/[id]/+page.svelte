@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { Character } from '$lib/types';
+	import { onMount } from 'svelte';
+	import type { Character, Nation, Religion } from '$lib/types';
 
 	export let data: { character: Character };
 
@@ -8,6 +9,29 @@
 	let loading = false;
 	let error = '';
 	let successMessage = '';
+	let nations: Nation[] = [];
+	let religions: Religion[] = [];
+
+	onMount(async () => {
+		try {
+			const [nationsResponse, religionsResponse] = await Promise.all([
+				fetch('http://localhost:5000/api/nations', { credentials: 'include' }),
+				fetch('http://localhost:5000/api/religions', { credentials: 'include' })
+			]);
+
+			if (nationsResponse.ok) {
+				const nationsResult = await nationsResponse.json();
+				nations = nationsResult.data || [];
+			}
+
+			if (religionsResponse.ok) {
+				const religionsResult = await religionsResponse.json();
+				religions = religionsResult.data || [];
+			}
+		} catch (err) {
+			console.error('Failed to fetch nations or religions:', err);
+		}
+	});
 
 	async function handleSubmit() {
 		loading = true;
@@ -113,23 +137,31 @@
 			</div>
 
 			<div>
-				<label for="nationId" class="block text-white font-medium mb-1">Nation ID</label>
-				<input
-					type="number"
-					id="nationId"
+				<label for="nation" class="block text-white font-medium mb-1">Nation</label>
+				<select
+					id="nation"
 					bind:value={character.NationID}
 					class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300 bg-gray-700 text-white"
-				/>
+				>
+					<option value={null}>Select Nation</option>
+					{#each nations as nation}
+						<option value={nation.NationID}>{nation.Name}</option>
+					{/each}
+				</select>
 			</div>
 
 			<div>
-				<label for="religionId" class="block text-white font-medium mb-1">Religion ID</label>
-				<input
-					type="number"
-					id="religionId"
+				<label for="religion" class="block text-white font-medium mb-1">Religion</label>
+				<select
+					id="religion"
 					bind:value={character.ReligionID}
 					class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300 bg-gray-700 text-white"
-				/>
+				>
+					<option value={null}>Select Religion</option>
+					{#each religions as religion}
+						<option value={religion.ReligionID}>{religion.Name}</option>
+					{/each}
+				</select>
 			</div>
 
 			<div class="md:col-span-2">

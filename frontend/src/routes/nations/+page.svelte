@@ -28,7 +28,8 @@
 {:else if error}
 	<p class="text-center text-red-500">{error}</p>
 {:else}
-	<div class="flex justify-end w-full mb-5">
+	<div class="flex justify-between items-center mb-6">
+		<h1 class="text-3xl text-white font-bold">Nations</h1>
 		<a href="./nations/new">
 			<button class="bg-sky-700 hover:bg-sky-600 text-white font-bold py-2 mt-5 px-4 rounded">
 				New Nation

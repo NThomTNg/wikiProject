@@ -76,6 +76,13 @@
 		const randomEntry = historyEntries[randomIndex];
 		viewHistoryEntry(randomEntry);
 	}
+
+	function truncateText(text: string, maxLength: number = 200): string {
+		if (text.length <= maxLength) {
+			return text;
+		}
+		return text.substring(0, maxLength).trim() + '...';
+	}
 </script>
 
 <div class="container mx-auto px-4 py-6">
@@ -129,8 +136,8 @@
 							<h2 class="text-xl font-semibold mb-2">{entry.Title}</h2>
 						{/if}
 						{#if entry.Content}
-							<p class="first-letter:text-xxl first-letter:font-serif">
-								{entry.Content}
+							<p class="first-letter:text-xxl first-letter:font-serif mb-3">
+								{truncateText(entry.Content, 500)}
 							</p>
 						{/if}
 						{#if entry.TimelinePeriod}

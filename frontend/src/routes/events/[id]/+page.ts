@@ -32,6 +32,11 @@ export const load: PageLoad = async ({ params, fetch }) => {
         
         const eventData = data.data || data;
         
+        console.log('PageLoad - Event data loaded:', eventData);
+        console.log('PageLoad - TimelinePeriod:', eventData.TimelinePeriod);
+        console.log('PageLoad - StartYear:', eventData.StartYear);
+        console.log('PageLoad - EndYear:', eventData.EndYear);
+        
         if (!eventData) {
             console.error(`No event data found for ID: ${eventId}`);
             throw error(404, 'Event data not found');

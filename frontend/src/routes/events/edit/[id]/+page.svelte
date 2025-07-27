@@ -2,14 +2,16 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import type { Nation, Location, Event } from '../../../../../../backend/src/models/types';
+	import type { Nation, Location, Event } from '$lib/types';
 
 	const id = $page.params.id;
 	let event: Event | null = null;
 
 	let title = '';
 	let description = '';
-	let eventDate = '';
+	let timelinePeriod = '';
+	let startYear = '';
+	let endYear = '';
 	let locationId: number | null = null;
 	let nationId: number | null = null;
 
@@ -18,6 +20,15 @@
 	let loading = true;
 	let submitLoading = false;
 	let error: string | null = null;
+
+	const timelinePeriods = [
+		'Birth Age',
+		'Argoneasian Age',
+		'Migration Era',
+		'Fourth Era',
+		'Breaking Age',
+		'Fifth Era'
+	];
 
 	onMount(async () => {
 		try {
@@ -49,7 +60,9 @@
 			if (event) {
 				title = event.Title;
 				description = event.Description || '';
-				eventDate = event.EventDate || '';
+				timelinePeriod = event.TimelinePeriod || '';
+				startYear = event.StartYear ? String(event.StartYear) : '';
+				endYear = event.EndYear ? String(event.EndYear) : '';
 				locationId = event.LocationID || null;
 				nationId = event.NationID || null;
 			}
@@ -74,7 +87,9 @@
 			const eventData = {
 				Title: title,
 				Description: description,
-				EventDate: eventDate,
+				TimelinePeriod: timelinePeriod || null,
+				StartYear: startYear ? Number(startYear) : null,
+				EndYear: endYear ? Number(endYear) : null,
 				LocationID: locationId,
 				NationID: nationId
 			};
@@ -133,17 +148,44 @@
 				</div>
 
 				<div>
-					<label for="eventDate" class="block text-white font-medium mb-2">Event Date</label>
-					<input
-						type="text"
-						id="eventDate"
-						bind:value={eventDate}
-						placeholder="e.g., 1242, January 1242, or 01/15/1242"
+					<label for="timelinePeriod" class="block text-white font-medium mb-2"
+						>Timeline Period</label
+					>
+					<select
+						id="timelinePeriod"
+						bind:value={timelinePeriod}
 						class="w-full px-3 py-2 bg-slate-800 text-white border border-slate-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-					/>
-					<p class="mt-1 text-sm text-gray-400">
-						Format: Year (e.g. 1242), Month and Year, or specific date
-					</p>
+					>
+						<option value="">-- Select Period --</option>
+						{#each timelinePeriods as period}
+							<option value={period}>{period}</option>
+						{/each}
+					</select>
+				</div>
+
+				<div class="grid grid-cols-2 gap-4">
+					<div>
+						<label for="startYear" class="block text-white font-medium mb-2">Start Year</label>
+						<input
+							type="number"
+							id="startYear"
+							bind:value={startYear}
+							placeholder="e.g., 1242"
+							class="w-full px-3 py-2 bg-slate-800 text-white border border-slate-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+						/>
+					</div>
+					<div>
+						<label for="endYear" class="block text-white font-medium mb-2"
+							>End Year (Optional)</label
+						>
+						<input
+							type="number"
+							id="endYear"
+							bind:value={endYear}
+							placeholder="e.g., 1245"
+							class="w-full px-3 py-2 bg-slate-800 text-white border border-slate-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+						/>
+					</div>
 				</div>
 
 				<div>
