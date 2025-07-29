@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { Nation } from '$lib/types';
+	import { onMount } from 'svelte';
+	import type { Nation, Location, Religion } from '$lib/types';
 
 	export let data: { nation: Nation };
 
@@ -8,6 +9,29 @@
 	let loading = false;
 	let error = '';
 	let successMessage = '';
+	let locations: Location[] = [];
+	let religions: Religion[] = [];
+
+	onMount(async () => {
+		try {
+			const [locationsResponse, religionsResponse] = await Promise.all([
+				fetch('http://localhost:5000/api/locations', { credentials: 'include' }),
+				fetch('http://localhost:5000/api/religions', { credentials: 'include' })
+			]);
+
+			if (locationsResponse.ok) {
+				const locationsResult = await locationsResponse.json();
+				locations = locationsResult.data || [];
+			}
+
+			if (religionsResponse.ok) {
+				const religionsResult = await religionsResponse.json();
+				religions = religionsResult.data || [];
+			}
+		} catch (err) {
+			console.error('Failed to fetch locations or religions:', err);
+		}
+	});
 
 	async function handleSubmit() {
 		loading = true;
@@ -91,17 +115,21 @@
 				/>
 			</div>
 
-			<!-- CapitalLocationID Field -->
+			<!-- Capital Location Field -->
 			<div>
-				<label for="capitalLocationID" class="block text-white font-medium mb-1"
-					>Capital Location ID</label
+				<label for="capitalLocation" class="block text-white font-medium mb-1"
+					>Capital Location</label
 				>
-				<input
-					type="number"
-					id="capitalLocationID"
+				<select
+					id="capitalLocation"
 					bind:value={nation.CapitalLocationID}
 					class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300 bg-gray-700 text-white"
-				/>
+				>
+					<option value={null}>Select Capital Location</option>
+					{#each locations as location}
+						<option value={location.LocationID}>{location.Name}</option>
+					{/each}
+				</select>
 			</div>
 
 			<!-- FoundingDate Field -->
@@ -115,17 +143,19 @@
 				/>
 			</div>
 
-			<!-- MajorReligionID Field -->
+			<!-- Major Religion Field -->
 			<div>
-				<label for="majorReligionID" class="block text-white font-medium mb-1"
-					>Major Religion ID</label
-				>
-				<input
-					type="number"
-					id="majorReligionID"
+				<label for="majorReligion" class="block text-white font-medium mb-1">Major Religion</label>
+				<select
+					id="majorReligion"
 					bind:value={nation.MajorReligionID}
 					class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300 bg-gray-700 text-white"
-				/>
+				>
+					<option value={null}>Select Major Religion</option>
+					{#each religions as religion}
+						<option value={religion.ReligionID}>{religion.Name}</option>
+					{/each}
+				</select>
 			</div>
 
 			<!-- Culture Field -->

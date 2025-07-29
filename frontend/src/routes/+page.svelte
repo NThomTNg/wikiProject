@@ -39,7 +39,7 @@
 <div class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 pb-10">
 	{#each images as { Image, title }}
 		<div
-			class="relative border border-black rounded-lg overflow-hidden shadow-lg transition-transform transform hover:-translate-y-1 hover:border-sky-800 hover:scale-110 hover:shadow-lg hover:shadow-blue-400/30"
+			class="relative border border-black rounded-lg overflow-hidden shadow-lg transition-transform transform hover:border-sky-800 hover:shadow-lg hover:shadow-blue-400/30"
 		>
 			<a
 				href={title === 'Characters'

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { Location } from '$lib/types';
+	import { onMount } from 'svelte';
+	import type { Location, Nation } from '$lib/types';
 
 	export let data: { location: Location };
 
@@ -8,6 +9,19 @@
 	let loading = false;
 	let error = '';
 	let successMessage = '';
+	let nations: Nation[] = [];
+
+	onMount(async () => {
+		try {
+			const response = await fetch('http://localhost:5000/api/nations', { credentials: 'include' });
+			if (response.ok) {
+				const result = await response.json();
+				nations = result.data || [];
+			}
+		} catch (err) {
+			console.error('Failed to fetch nations:', err);
+		}
+	});
 
 	async function handleSubmit() {
 		loading = true;
@@ -91,15 +105,19 @@
 				/>
 			</div>
 
-			<!-- Nation ID Field -->
+			<!-- Nation Field -->
 			<div>
-				<label for="nationId" class="block text-white font-medium mb-1">Nation ID</label>
-				<input
-					type="number"
-					id="nationId"
+				<label for="nation" class="block text-white font-medium mb-1">Nation</label>
+				<select
+					id="nation"
 					bind:value={location.NationID}
 					class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300 bg-gray-700 text-white"
-				/>
+				>
+					<option value={null}>Select Nation</option>
+					{#each nations as nation}
+						<option value={nation.NationID}>{nation.Name}</option>
+					{/each}
+				</select>
 			</div>
 
 			<!-- Coordinate X Field -->
