@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 	import type { HistoryEntryWithRelations } from '$lib/types';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	export let data: PageData;
 	const { historyEntry, nations } = data;
@@ -45,7 +46,7 @@
 		try {
 			console.log(`Updating history entry ${id} with data:`, historyData);
 
-			const response = await fetch(`http://localhost:5000/api/historyEntries/${id}`, {
+			const response = await fetch(`${API_BASE_URL}/api/historyEntries/${id}`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json'

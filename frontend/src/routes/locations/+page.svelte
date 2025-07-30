@@ -3,6 +3,7 @@
 	import type { Location } from '$lib/types';
 	import ItemBox from '$lib/components/ItemBox.svelte';
 	import GridLayout from '$lib/components/GridLayout.svelte';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	let locations: Location[] = [];
 	let loading = true;
@@ -10,7 +11,7 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch('http://localhost:5000/api/locations');
+			const response = await fetch(`${API_BASE_URL}/api/locations`);
 			if (!response.ok) throw new Error('Failed to fetch locations');
 			const data = await response.json();
 			locations = data.data;

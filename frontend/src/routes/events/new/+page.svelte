@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { Nation, Location, Event } from '$lib/types';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	let events: Event[] = [];
 	let locations: Location[] = [];
@@ -34,9 +35,9 @@
 	const fetchFormData = async () => {
 		try {
 			const [locationsRes, nationsRes, eventsRes] = await Promise.all([
-				fetch('http://localhost:5000/api/locations'),
-				fetch('http://localhost:5000/api/nations'),
-				fetch('http://localhost:5000/api/events')
+				fetch(`${API_BASE_URL}/api/locations`),
+				fetch(`${API_BASE_URL}/api/nations`),
+				fetch(`${API_BASE_URL}/api/events`)
 			]);
 
 			if (!locationsRes.ok || !nationsRes.ok || !eventsRes.ok) {
@@ -80,7 +81,7 @@
 
 			console.log('Sending event data:', eventData);
 
-			const response = await fetch('http://localhost:5000/api/events', {
+			const response = await fetch(`${API_BASE_URL}/api/events`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'

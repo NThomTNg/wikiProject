@@ -3,6 +3,7 @@
 	import type { Religion } from '$lib/types';
 	import { goto } from '$app/navigation';
 	import { getImageUrl } from '$lib/utils/imageUtils';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	export let data: { religion?: Religion; error?: string };
 	const id = $page.params.id;
@@ -26,16 +27,13 @@
 				if (!data.religion) {
 					throw new Error('Religion data is missing');
 				}
-				const response = await fetch(
-					`http://localhost:5000/api/religions/${data.religion.ReligionID}`,
-					{
-						method: 'DELETE',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						credentials: 'include'
-					}
-				);
+				const response = await fetch(`${API_BASE_URL}/api/religions/${data.religion.ReligionID}`, {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					credentials: 'include'
+				});
 
 				if (!response.ok) {
 					const errorData = await response.json();

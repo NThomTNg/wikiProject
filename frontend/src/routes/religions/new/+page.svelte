@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { Religion } from '$lib/types';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	export let data: { religions: Religion[] };
 
@@ -42,7 +43,7 @@
 		formData.append('image', imageFile);
 
 		try {
-			const uploadResponse = await fetch('http://localhost:5000/api/upload/religion', {
+			const uploadResponse = await fetch(`${API_BASE_URL}/api/upload/religion`, {
 				method: 'POST',
 				body: formData,
 				credentials: 'include'
@@ -97,7 +98,7 @@
 
 			uploadProgress = 80;
 
-			const response = await fetch('http://localhost:5000/api/religions', {
+			const response = await fetch(`${API_BASE_URL}/api/religions`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'

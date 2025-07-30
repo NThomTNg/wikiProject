@@ -2,6 +2,7 @@
 	import type { Location } from '$lib/types';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	export let data: { location?: Location; error?: string };
 	const id = $page.params.id;
@@ -26,16 +27,13 @@
 				if (!data.location) {
 					throw new Error('Location data is missing');
 				}
-				const response = await fetch(
-					`http://localhost:5000/api/locations/${data.location.LocationID}`,
-					{
-						method: 'DELETE',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						credentials: 'include'
-					}
-				);
+				const response = await fetch(`${API_BASE_URL}/api/locations/${data.location.LocationID}`, {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					credentials: 'include'
+				});
 
 				if (!response.ok) {
 					const errorData = await response.json();

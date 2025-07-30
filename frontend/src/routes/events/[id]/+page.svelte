@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import type { EventWithRelations } from '$lib/types';
 	import type { PageData } from './$types';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	export let data: PageData;
 
@@ -48,7 +49,7 @@
 		}
 
 		try {
-			const response = await fetch(`http://localhost:5000/api/events/${id}`, {
+			const response = await fetch(`${API_BASE_URL}/api/events/${id}`, {
 				method: 'DELETE'
 			});
 

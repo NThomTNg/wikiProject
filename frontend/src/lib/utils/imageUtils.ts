@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '$lib/config/api';
+
 /**
  *
  * 
@@ -11,7 +13,7 @@ export function getImageUrl(imageURL: string | null | undefined): string | null 
         return imageURL;
     }
     if (imageURL.startsWith('/uploads/')) {
-        return `http://localhost:5000${imageURL}`;
+        return `${API_BASE_URL}${imageURL}`;
     }
     return imageURL;
 }

@@ -4,6 +4,7 @@
 	import { page } from '$app/stores';
 	import { getImageUrl } from '$lib/utils/imageUtils';
 	import { onMount } from 'svelte';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	export let data: { character?: Character; error?: string };
 
@@ -15,12 +16,9 @@
 		if (data.character) {
 			if (data.character.NationID) {
 				try {
-					const response = await fetch(
-						`http://localhost:5000/api/nations/${data.character.NationID}`,
-						{
-							credentials: 'include'
-						}
-					);
+					const response = await fetch(`${API_BASE_URL}/api/nations/${data.character.NationID}`, {
+						credentials: 'include'
+					});
 					if (response.ok) {
 						const result = await response.json();
 						const nation = result.data || result;
@@ -38,7 +36,7 @@
 			if (data.character.ReligionID) {
 				try {
 					const response = await fetch(
-						`http://localhost:5000/api/religions/${data.character.ReligionID}`,
+						`${API_BASE_URL}/api/religions/${data.character.ReligionID}`,
 						{
 							credentials: 'include'
 						}
@@ -79,7 +77,7 @@
 					throw new Error('Character data is missing');
 				}
 				const response = await fetch(
-					`http://localhost:5000/api/characters/${data.character.CharacterID}`,
+					`${API_BASE_URL}/api/characters/${data.character.CharacterID}`,
 					{
 						method: 'DELETE',
 						headers: {

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { API_BASE_URL } from '$lib/config/api';
 	export let data;
 
 	let location = {
@@ -15,7 +16,7 @@
 
 	async function handleSubmit() {
 		try {
-			const response = await fetch('http://localhost:5000/api/locations', {
+			const response = await fetch(`${API_BASE_URL}/api/locations`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

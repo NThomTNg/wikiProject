@@ -4,6 +4,7 @@
 	import GridLayout from '$lib/components/GridLayout.svelte';
 	import ItemBox from '$lib/components/ItemBox.svelte';
 	import type { HistoryEntryWithRelations } from '$lib/types';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	let historyEntries: HistoryEntryWithRelations[] = [];
 	let loading = true;
@@ -15,7 +16,7 @@
 
 	async function fetchHistoryEntries() {
 		try {
-			const response = await fetch('http://localhost:5000/api/historyEntries');
+			const response = await fetch(`${API_BASE_URL}/api/historyEntries`);
 			if (!response.ok) {
 				throw new Error('Failed to fetch history entries');
 			}

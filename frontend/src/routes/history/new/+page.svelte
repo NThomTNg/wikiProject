@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	export let data: PageData;
 	const { nations } = data;
@@ -48,7 +49,7 @@
 		try {
 			console.log('Creating new history entry with data:', historyData);
 
-			const response = await fetch('http://localhost:5000/api/historyEntries', {
+			const response = await fetch(`${API_BASE_URL}/api/historyEntries`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'

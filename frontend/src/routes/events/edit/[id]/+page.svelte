@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import type { Nation, Location, Event } from '$lib/types';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	const id = $page.params.id;
 	let event: Event | null = null;
@@ -33,11 +34,10 @@
 	onMount(async () => {
 		try {
 			const [eventRes, locationsRes, nationsRes] = await Promise.all([
-				fetch(`http://localhost:5000/api/events/${id}`),
-				fetch('http://localhost:5000/api/locations'),
-				fetch('http://localhost:5000/api/nations')
+				fetch(`${API_BASE_URL}/api/events/${id}`),
+				fetch(`${API_BASE_URL}/api/locations`),
+				fetch(`${API_BASE_URL}/api/nations`)
 			]);
-
 			if (!eventRes.ok) {
 				if (eventRes.status === 404) {
 					throw new Error('Event not found');
@@ -94,7 +94,7 @@
 				NationID: nationId
 			};
 
-			const response = await fetch(`http://localhost:5000/api/events/${id}`, {
+			const response = await fetch(`${API_BASE_URL}/api/events/${id}`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json'

@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 	import type { HistoryEntryWithRelations } from '$lib/types';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	export let data: PageData;
 	const id = $page.params.id;
@@ -33,9 +34,7 @@
 		}
 
 		try {
-			const response = await fetch(
-				`http://localhost:5000/api/historyEntries/${id}?t=${Date.now()}`
-			);
+			const response = await fetch(`${API_BASE_URL}/api/historyEntries/${id}?t=${Date.now()}`);
 			console.log('Response status:', response.status);
 
 			if (!response.ok) {
@@ -83,7 +82,7 @@
 
 		try {
 			const response = await fetch(
-				`http://localhost:5000/api/historyEntries?limit=5&Category=${encodeURIComponent(category)}`
+				`${API_BASE_URL}/api/historyEntries?limit=5&Category=${encodeURIComponent(category)}`
 			);
 			if (!response.ok) return;
 
@@ -131,7 +130,7 @@
 		}
 
 		try {
-			const response = await fetch(`http://localhost:5000/api/historyEntries/${id}`, {
+			const response = await fetch(`${API_BASE_URL}/api/historyEntries/${id}`, {
 				method: 'DELETE'
 			});
 

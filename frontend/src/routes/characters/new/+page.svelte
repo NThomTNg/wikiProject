@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { API_BASE_URL } from '$lib/config/api';
 	export let data;
 
 	let character = {
@@ -38,7 +39,7 @@
 		formData.append('image', imageFile);
 
 		try {
-			const uploadResponse = await fetch('http://localhost:5000/api/upload/character', {
+			const uploadResponse = await fetch(`${API_BASE_URL}/api/upload/character`, {
 				method: 'POST',
 				body: formData,
 				credentials: 'include'
@@ -91,7 +92,7 @@
 
 			uploadProgress = 80;
 
-			const response = await fetch('http://localhost:5000/api/characters', {
+			const response = await fetch(`${API_BASE_URL}/api/characters`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'

@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import type { EventWithRelations } from '$lib/types';
 	import EventTimeline from '$lib/components/EventTimeline.svelte';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	let events: EventWithRelations[] = [];
 	let loading = true;
@@ -15,7 +16,7 @@
 
 	async function fetchEvents() {
 		try {
-			const response = await fetch('http://localhost:5000/api/events');
+			const response = await fetch(`${API_BASE_URL}/api/events`);
 			if (!response.ok) {
 				throw new Error('Failed to fetch events');
 			}
