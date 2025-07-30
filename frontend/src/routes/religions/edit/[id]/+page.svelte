@@ -123,6 +123,17 @@
 					class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300 bg-gray-700 text-white"
 				/>
 			</div>
+
+			<!-- Image URL Field -->
+			<div class="md:col-span-2">
+				<label for="imageUrl" class="block text-white font-medium mb-1">Image URL</label>
+				<input
+					type="text"
+					id="imageUrl"
+					bind:value={religion.ImageURL}
+					class="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300 bg-gray-700 text-white"
+				/>
+			</div>
 		</div>
 
 		<!-- Description Field -->

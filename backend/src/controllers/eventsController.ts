@@ -65,17 +65,6 @@ export const addEvent = async (req: Request, res: Response): Promise<void> => {
         NationID
     } = req.body;
 
-    console.log('Received event data:', {
-        Title,
-        Description,
-        EventDate,
-        TimelinePeriod,
-        StartYear,
-        EndYear,
-        LocationID,
-        NationID
-    });
-
     if (!Title) {
         res.status(400).json({ error: 'Title is required' });
         return;
@@ -124,18 +113,6 @@ export const updateEvent = async (req: Request, res: Response): Promise<void> =>
         LocationID,
         NationID
     } = req.body;
-
-    console.log('Updating event with data:', {
-        eventId,
-        Title,
-        Description,
-        EventDate,
-        TimelinePeriod,
-        StartYear,
-        EndYear,
-        LocationID,
-        NationID
-    });
 
     if (!Title) {
         res.status(400).json({ error: 'Title is required' });

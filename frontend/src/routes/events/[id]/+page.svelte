@@ -101,7 +101,7 @@
 					<div class="flex gap-2">
 						<button
 							on:click={handleEdit}
-							class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded shadow transition-colors"
+							class="bg-sky-600 hover:bg-sky-700 text-white py-1 px-3 rounded shadow transition-colors"
 						>
 							Edit
 						</button>

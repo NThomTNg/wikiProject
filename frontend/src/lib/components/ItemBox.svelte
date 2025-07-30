@@ -4,7 +4,6 @@
 	export let href: string;
 	export let title: string;
 	export let imageUrl: string | null = null;
-	export let customClass: string = '';
 	export let customTitleClass: string = 'text-white';
 
 	const dispatch = createEventDispatcher();

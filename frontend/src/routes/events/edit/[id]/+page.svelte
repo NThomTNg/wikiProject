@@ -250,7 +250,7 @@
 					<button
 						type="submit"
 						disabled={submitLoading}
-						class="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded transition-colors flex items-center"
+						class="px-4 py-2 bg-sky-600 hover:bg-sky-700 disabled:bg-blue-400 text-white rounded transition-colors flex items-center"
 					>
 						{#if submitLoading}
 							<span class="mr-2">Saving...</span>

@@ -15,7 +15,7 @@
 			'Fifth Era'
 		];
 
-		// First, sort by timeline period order
+		// Sort by timeline period order
 		const aTimelineIndex = a.TimelinePeriod ? timelineOrder.indexOf(a.TimelinePeriod) : 999;
 		const bTimelineIndex = b.TimelinePeriod ? timelineOrder.indexOf(b.TimelinePeriod) : 999;
 

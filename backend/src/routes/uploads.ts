@@ -5,7 +5,6 @@ import fs from 'fs';
 
 const router = express.Router();
 
-// Ensure upload directories exist
 const religionUploadDir = path.join(__dirname, '../../uploads/religions');
 const characterUploadDir = path.join(__dirname, '../../uploads/characters');
 
@@ -17,7 +16,7 @@ if (!fs.existsSync(characterUploadDir)) {
     fs.mkdirSync(characterUploadDir, { recursive: true });
 }
 
-// Common file filter
+// File filter
 const fileFilter = (req: any, file: any, cb: any) => {
     const allowedTypes = /jpeg|jpg|png|gif/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
@@ -30,7 +29,6 @@ const fileFilter = (req: any, file: any, cb: any) => {
     }
 };
 
-// Religion upload configuration
 const religionStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, religionUploadDir);
@@ -48,7 +46,6 @@ const religionUpload = multer({
     fileFilter: fileFilter
 });
 
-// Character upload configuration (exact same pattern)
 const characterStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, characterUploadDir);
@@ -66,7 +63,6 @@ const characterUpload = multer({
     fileFilter: fileFilter
 });
 
-// Religion upload endpoint (existing)
 router.post('/religion', religionUpload.single('image'), (req: Request, res: Response): void => {
     try {
         if (!req.file) {
@@ -88,7 +84,6 @@ router.post('/religion', religionUpload.single('image'), (req: Request, res: Res
     }
 });
 
-// Character upload endpoint (exact same pattern)
 router.post('/character', characterUpload.single('image'), (req: Request, res: Response): void => {
     try {
         if (!req.file) {
