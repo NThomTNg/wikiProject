@@ -1,6 +1,7 @@
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import type { EventWithRelations } from '$lib/types';
+import { API_BASE_URL } from '$lib/config/api';
 
 export const load: PageLoad = async ({ params, fetch }) => {
     try {
@@ -10,7 +11,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
             console.error(`Invalid event ID: ${eventId}`);
             throw error(400, `Invalid event ID: ${eventId}`);
         }
-        const response = await fetch(`http://localhost:5000/api/events/${eventId}?t=${Date.now()}`);
+        const response = await fetch(`${API_BASE_URL}/api/events/${eventId}?t=${Date.now()}`);
         
         if (!response.ok) {
             if (response.status === 404) {

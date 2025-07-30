@@ -1,26 +1,26 @@
 import { error } from '@sveltejs/kit';
+import type { PageLoad } from './$types';
 import type { Location } from '$lib/types';
+import { API_BASE_URL } from '$lib/config/api';
 
-export async function load({ params, fetch }) {
-    const id = params.id;
-    
+export const load: PageLoad = async ({ params }) => {
     try {
-        const response = await fetch(`http://localhost:5000/api/locations/${id}`);
+        const locationId = params.id;
+        const response = await fetch(`${API_BASE_URL}/api/locations/${locationId}`);
         
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `Failed to load location with ID ${id}`);
+            if (response.status === 404) {
+                throw error(404, 'Location not found');
+            }
+            throw new Error('Failed to fetch location data');
         }
         
-        const { data } = await response.json();
-        
+        const data = await response.json();
         return {
-            location: data as Location
+            location: data.data as Location
         };
-    } catch (err) {
-        console.error('Error loading location:', err);
-        throw error(404, {
-            message: err instanceof Error ? err.message : 'Failed to load location'
-        });
+    } catch (e) {
+        console.error('Error loading location:', e);
+        throw error(500, 'Failed to load location');
     }
-}
+};

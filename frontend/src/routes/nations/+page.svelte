@@ -4,6 +4,7 @@
 	import ItemBox from '$lib/components/ItemBox.svelte';
 	import GridLayout from '$lib/components/GridLayout.svelte';
 	import { getImageUrl } from '$lib/utils/imageUtils';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	let nations: Nation[] = [];
 	let loading = true;
@@ -11,7 +12,7 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch('http://localhost:5000/api/nations');
+			const response = await fetch(`${API_BASE_URL}/api/nations`);
 			if (!response.ok) throw new Error('Failed to fetch nations');
 			const data = await response.json();
 			nations = data.data;

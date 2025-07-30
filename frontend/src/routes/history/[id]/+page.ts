@@ -1,8 +1,9 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import type { HistoryEntryWithRelations } from '$lib/types';
+import { API_BASE_URL } from '$lib/config/api';
 
-export const load: PageLoad = async ({ params, fetch, url }) => {
+export const load: PageLoad = async ({ params, fetch }) => {
     try {
         
         const historyId = params.id;
@@ -17,7 +18,7 @@ export const load: PageLoad = async ({ params, fetch, url }) => {
             throw error(400, `Invalid history ID format: ${historyId}`);
         }
         
-        const response = await fetch(`http://localhost:5000/api/historyEntries/${historyId}?t=${Date.now()}`);
+        const response = await fetch(`${API_BASE_URL}/api/historyEntries/${historyId}?t=${Date.now()}`);
         
         if (!response.ok) {
             if (response.status === 404) {
@@ -46,7 +47,7 @@ export const load: PageLoad = async ({ params, fetch, url }) => {
         
         try {
             const category = encodeURIComponent(historyEntry.Category || '');
-            const relatedResponse = await fetch(`http://localhost:5000/api/historyEntries?limit=5&Category=${category}`);
+            const relatedResponse = await fetch(`${API_BASE_URL}/api/historyEntries?limit=5&Category=${category}`);
             
             if (!relatedResponse.ok) {
                 console.warn(`Could not fetch related entries: ${relatedResponse.statusText}`);

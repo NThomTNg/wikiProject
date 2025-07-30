@@ -1,21 +1,21 @@
 import type { PageLoad } from './$types';
-import type { Nation } from '$lib/types';
+import { API_BASE_URL } from '$lib/config/api';
 
 export const load: PageLoad = async () => {
     try {
-        const locationsResponse = await fetch('http://localhost:5000/api/locations');
+        const locationsResponse = await fetch(`${API_BASE_URL}/api/locations`);
         if (!locationsResponse.ok) {
             throw new Error('Failed to fetch locations');
         }
         const locationsData = await locationsResponse.json();
 
-        const religionsResponse = await fetch('http://localhost:5000/api/religions');
+        const religionsResponse = await fetch(`${API_BASE_URL}/api/religions`);
         if (!religionsResponse.ok) {
             throw new Error('Failed to fetch religions');
         }
         const religionsData = await religionsResponse.json();
 
-        const nationsResponse = await fetch('http://localhost:5000/api/nations');
+        const nationsResponse = await fetch(`${API_BASE_URL}/api/nations`);
         if (!nationsResponse.ok) {
             throw new Error('Failed to fetch nations');
         }

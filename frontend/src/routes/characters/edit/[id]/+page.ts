@@ -1,26 +1,26 @@
 import { error } from '@sveltejs/kit';
+import type { PageLoad } from './$types';
 import type { Character } from '$lib/types';
+import { API_BASE_URL } from '$lib/config/api';
 
-export async function load({ params, fetch }) {
-    const id = params.id;
-    
+export const load: PageLoad = async ({ params }) => {
     try {
-        const response = await fetch(`http://localhost:5000/api/characters/${id}`);
+        const characterId = params.id;
+        const response = await fetch(`${API_BASE_URL}/api/characters/${characterId}`);
         
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `Failed to load character with ID ${id}`);
+            if (response.status === 404) {
+                throw error(404, 'Character not found');
+            }
+            throw new Error('Failed to fetch character data');
         }
         
-        const { data } = await response.json();
-        
+        const data = await response.json();
         return {
-            character: data as Character
+            character: data.data as Character
         };
-    } catch (err) {
-        console.error('Error loading character:', err);
-        throw error(404, {
-            message: err instanceof Error ? err.message : 'Failed to load character'
-        });
+    } catch (e) {
+        console.error('Error loading character:', e);
+        throw error(500, 'Failed to load character');
     }
-}
+};

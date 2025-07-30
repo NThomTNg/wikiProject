@@ -1,11 +1,12 @@
 import type { PageLoad } from './$types';
 import type { Nation, Location } from '$lib/types';
+import { API_BASE_URL } from '$lib/config/api';
 
 export const load: PageLoad = async ({ fetch }) => {
     try {
         const [locationsRes, nationsRes] = await Promise.all([
-            fetch('http://localhost:5000/api/locations'),
-            fetch('http://localhost:5000/api/nations')
+            fetch(`${API_BASE_URL}/api/locations`),
+            fetch(`${API_BASE_URL}/api/nations`)
         ]);
 
         if (!locationsRes.ok || !nationsRes.ok) {

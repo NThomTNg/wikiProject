@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import type { Nation, Location, Religion } from '$lib/types';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	export let data: { nation: Nation };
 
@@ -15,8 +16,8 @@
 	onMount(async () => {
 		try {
 			const [locationsResponse, religionsResponse] = await Promise.all([
-				fetch('http://localhost:5000/api/locations', { credentials: 'include' }),
-				fetch('http://localhost:5000/api/religions', { credentials: 'include' })
+				fetch(`${API_BASE_URL}/api/locations`, { credentials: 'include' }),
+				fetch(`${API_BASE_URL}/api/religions`, { credentials: 'include' })
 			]);
 
 			if (locationsResponse.ok) {
@@ -39,7 +40,7 @@
 		successMessage = '';
 
 		try {
-			const response = await fetch(`http://localhost:5000/api/nations/${nation.NationID}`, {
+			const response = await fetch(`${API_BASE_URL}/api/nations/${nation.NationID}`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json'

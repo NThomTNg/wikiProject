@@ -1,11 +1,12 @@
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 import type { Religion } from '$lib/types';
+import { API_BASE_URL } from '$lib/config/api';
 
 export const load: PageLoad = async ({ params }) => {
     try {
         const religionId = params.id;
-        const response = await fetch(`http://localhost:5000/api/religions/${religionId}`);
+        const response = await fetch(`${API_BASE_URL}/api/religions/${religionId}`);
         
         if (!response.ok) {
             if (response.status === 404) {

@@ -1,28 +1,26 @@
-import type { LoadEvent } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
+import type { PageLoad } from './$types';
+import type { Nation } from '$lib/types';
+import { API_BASE_URL } from '$lib/config/api';
 
-export const load = async ({ params, fetch }: LoadEvent) => {
-  try {
-    const response = await fetch(`http://localhost:5000/api/nations/${params.id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include' 
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to fetch nation');
+export const load: PageLoad = async ({ params }) => {
+    try {
+        const nationId = params.id;
+        const response = await fetch(`${API_BASE_URL}/api/nations/${nationId}`);
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw error(404, 'Nation not found');
+            }
+            throw new Error('Failed to fetch nation data');
+        }
+        
+        const data = await response.json();
+        return {
+            nation: data.data as Nation
+        };
+    } catch (e) {
+        console.error('Error loading nation:', e);
+        throw error(500, 'Failed to load nation');
     }
-
-    const { data } = await response.json();
-
-    return {
-      nation: data
-    };
-  } catch (error) {
-    return {
-      error: error instanceof Error ? error.message : 'Failed to load nation'
-    };
-  }
 };

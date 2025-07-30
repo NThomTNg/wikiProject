@@ -1,26 +1,26 @@
 import { error } from '@sveltejs/kit';
+import type { PageLoad } from './$types';
 import type { Religion } from '$lib/types';
+import { API_BASE_URL } from '$lib/config/api';
 
-export async function load({ params, fetch }) {
-    const id = params.id;
-    
+export const load: PageLoad = async ({ params }) => {
     try {
-        const response = await fetch(`http://localhost:5000/api/religions/${id}`);
+        const religionId = params.id;
+        const response = await fetch(`${API_BASE_URL}/api/religions/${religionId}`);
         
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `Failed to load religion with ID ${id}`);
+            if (response.status === 404) {
+                throw error(404, 'Religion not found');
+            }
+            throw new Error('Failed to fetch religion data');
         }
         
-        const { data } = await response.json();
-        
+        const data = await response.json();
         return {
-            religion: data as Religion
+            religion: data.data as Religion
         };
-    } catch (err) {
-        console.error('Error loading religion:', err);
-        throw error(404, {
-            message: err instanceof Error ? err.message : 'Failed to load religion'
-        });
+    } catch (e) {
+        console.error('Error loading religion:', e);
+        throw error(500, 'Failed to load religion');
     }
-}
+};

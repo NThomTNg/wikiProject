@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { Religion } from '$lib/types';
+	import { API_BASE_URL } from '$lib/config/api';
 
 	export let data: { religion: Religion };
 
@@ -15,7 +16,7 @@
 		successMessage = '';
 
 		try {
-			const response = await fetch(`http://localhost:5000/api/religions/${religion.ReligionID}`, {
+			const response = await fetch(`${API_BASE_URL}/api/religions/${religion.ReligionID}`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json'
