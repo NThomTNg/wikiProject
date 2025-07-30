@@ -34,7 +34,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
         };
     } catch (err) {
         console.error('Error loading data for edit page:', err);
-        if (err.status) throw err;
+        if (err && typeof err === 'object' && 'status' in err) throw err;
         throw error(500, 'Failed to load history entry for editing');
     }
 };
