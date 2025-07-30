@@ -16,7 +16,11 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-    origin: ['http://localhost:5173'],
+    origin: [
+        'http://localhost:5173',
+        'https://*.vercel.app',
+        'https://wiki-backend-production.up.railway.app'
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204
