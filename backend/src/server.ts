@@ -17,9 +17,10 @@ app.use((req, res, next) => {
 
 app.use(cors({
     origin: [
-        'http://localhost:5173',
-        'https://*.vercel.app',
-        'https://wiki-backend-production.up.railway.app'
+        'http://localhost:5173', 
+        'http://localhost:3000',
+        'https://fantasywiki-820eyqyzm-nthomasns-projects.vercel.app',
+        'https://fantasywiki.vercel.app'
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
