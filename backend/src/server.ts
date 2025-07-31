@@ -7,7 +7,7 @@ import locationRoutes from './routes/locations';
 import religionRoutes from './routes/religions';
 import eventRoutes from './routes/events';
 import historyEntryRoutes from './routes/historyEntries';
-import imageRoutes from './routes/images';
+import uploadRoutes from './routes/uploads';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,7 +39,7 @@ app.use('/api/locations', locationRoutes);
 app.use('/api/religions', religionRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/historyEntries', historyEntryRoutes);
-app.use('/api/images', imageRoutes);
+app.use('/api/upload', uploadRoutes);
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error('Global error:', err.stack);
