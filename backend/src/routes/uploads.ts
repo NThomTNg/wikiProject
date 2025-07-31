@@ -5,72 +5,67 @@ import fs from 'fs';
 
 const router = express.Router();
 
-const religionUploadDir = path.join(__dirname, '../../uploads/religions');
-const characterUploadDir = path.join(__dirname, '../../uploads/characters');
-
-if (!fs.existsSync(religionUploadDir)) {
-    fs.mkdirSync(religionUploadDir, { recursive: true });
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, '../../uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-if (!fs.existsSync(characterUploadDir)) {
-    fs.mkdirSync(characterUploadDir, { recursive: true });
-}
-
-// File filter
-const fileFilter = (req: any, file: any, cb: any) => {
-    const allowedTypes = /jpeg|jpg|png|gif/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-
-    if (mimetype && extname) {
-        return cb(null, true);
-    } else {
-        cb(new Error('Only image files are allowed!'));
-    }
-};
-
-const religionStorage = multer.diskStorage({
+// Configure multer for file uploads
+const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, religionUploadDir);
+        cb(null, uploadsDir);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, `religion-${uniqueSuffix}${ext}`);
+        const extension = path.extname(file.originalname);
+        cb(null, `${file.fieldname}-${uniqueSuffix}${extension}`);
     }
 });
 
-const religionUpload = multer({
-    storage: religionStorage,
-    limits: { fileSize: 5 * 1024 * 1024 },
-    fileFilter: fileFilter
-});
-
-const characterStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, characterUploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, `character-${uniqueSuffix}${ext}`);
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files allowed'));
+        }
     }
 });
 
-const characterUpload = multer({
-    storage: characterStorage,
-    limits: { fileSize: 5 * 1024 * 1024 },
-    fileFilter: fileFilter
-});
-
-router.post('/religion', religionUpload.single('image'), (req: Request, res: Response): void => {
+// Character image upload
+router.post('/character', upload.single('image'), (req: Request, res: Response): void => {
     try {
         if (!req.file) {
             res.status(400).json({ error: 'No file uploaded' });
             return;
         }
 
-        const filePath = `/uploads/religions/${req.file.filename}`;
+        const filePath = `/uploads/${req.file.filename}`;
+        console.log('Character image uploaded successfully:', filePath);
+        
+        res.json({ 
+            message: 'Character image uploaded successfully',
+            filePath: filePath,
+            filename: req.file.filename
+        });
+    } catch (error) {
+        console.error('Error uploading character image:', error);
+        res.status(500).json({ error: 'Failed to upload character image' });
+    }
+});
+
+// Religion image upload
+router.post('/religion', upload.single('image'), (req: Request, res: Response): void => {
+    try {
+        if (!req.file) {
+            res.status(400).json({ error: 'No file uploaded' });
+            return;
+        }
+
+        const filePath = `/uploads/${req.file.filename}`;
         console.log('Religion image uploaded successfully:', filePath);
         
         res.json({ 
@@ -84,24 +79,25 @@ router.post('/religion', religionUpload.single('image'), (req: Request, res: Res
     }
 });
 
-router.post('/character', characterUpload.single('image'), (req: Request, res: Response): void => {
+// Nation image upload
+router.post('/nation', upload.single('image'), (req: Request, res: Response): void => {
     try {
         if (!req.file) {
             res.status(400).json({ error: 'No file uploaded' });
             return;
         }
 
-        const filePath = `/uploads/characters/${req.file.filename}`;
-        console.log('Character image uploaded successfully:', filePath);
+        const filePath = `/uploads/${req.file.filename}`;
+        console.log('Nation image uploaded successfully:', filePath);
         
         res.json({ 
-            message: 'Character image uploaded successfully',
+            message: 'Nation image uploaded successfully',
             filePath: filePath,
             filename: req.file.filename
         });
     } catch (error) {
-        console.error('Error uploading character image:', error);
-        res.status(500).json({ error: 'Failed to upload character image' });
+        console.error('Error uploading nation image:', error);
+        res.status(500).json({ error: 'Failed to upload nation image' });
     }
 });
 
