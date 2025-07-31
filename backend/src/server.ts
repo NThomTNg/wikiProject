@@ -1,11 +1,13 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import characterRoutes from './routes/characters';
 import nationRoutes from './routes/nations';
 import locationRoutes from './routes/locations';
 import religionRoutes from './routes/religions';
 import eventRoutes from './routes/events';
 import historyEntryRoutes from './routes/historyEntries';
+import imageRoutes from './routes/images';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,12 +31,15 @@ app.use(cors({
 
 app.use(express.json());
 
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 app.use('/api/characters', characterRoutes);
 app.use('/api/nations', nationRoutes);
 app.use('/api/locations', locationRoutes);
 app.use('/api/religions', religionRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/historyEntries', historyEntryRoutes);
+app.use('/api/images', imageRoutes);
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error('Global error:', err.stack);
