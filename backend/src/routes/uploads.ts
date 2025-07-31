@@ -3,30 +3,46 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
+console.log('Loading uploads.ts routes...');
+
 const router = express.Router();
 
-// Create uploads directory if it doesn't exist
+// Add test route to verify router is working
+router.get('/test', (req: Request, res: Response) => {
+    res.json({ 
+        message: 'Upload routes are working!', 
+        timestamp: new Date().toISOString(),
+        availableRoutes: ['/character', '/religion', '/nation']
+    });
+});
+
 const uploadsDir = path.join(__dirname, '../../uploads');
+console.log('Upload directory:', uploadsDir);
+
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
+    console.log('Created uploads directory');
 }
 
-// Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+        console.log('Storing file in directory:', uploadsDir);
         cb(null, uploadsDir);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const extension = path.extname(file.originalname);
-        cb(null, `${file.fieldname}-${uniqueSuffix}${extension}`);
+        const filename = `${file.fieldname}-${uniqueSuffix}${extension}`;
+        console.log('Generated filename:', filename);
+        cb(null, filename);
     }
 });
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
+        console.log('Checking file type:', file.mimetype);
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
         } else {
@@ -35,10 +51,18 @@ const upload = multer({
     }
 });
 
-// Character image upload
 router.post('/character', upload.single('image'), (req: Request, res: Response): void => {
     try {
+        console.log('Character image upload request received');
+        console.log('Request body:', req.body);
+        console.log('File info:', req.file ? {
+            filename: req.file.filename,
+            mimetype: req.file.mimetype,
+            size: req.file.size
+        } : 'No file');
+        
         if (!req.file) {
+            console.log('ERROR: No file in request');
             res.status(400).json({ error: 'No file uploaded' });
             return;
         }
@@ -57,10 +81,18 @@ router.post('/character', upload.single('image'), (req: Request, res: Response):
     }
 });
 
-// Religion image upload
 router.post('/religion', upload.single('image'), (req: Request, res: Response): void => {
     try {
+        console.log('Religion image upload request received');
+        console.log('Request body:', req.body);
+        console.log('File info:', req.file ? {
+            filename: req.file.filename,
+            mimetype: req.file.mimetype,
+            size: req.file.size
+        } : 'No file');
+        
         if (!req.file) {
+            console.log('ERROR: No file in request');
             res.status(400).json({ error: 'No file uploaded' });
             return;
         }
@@ -79,10 +111,18 @@ router.post('/religion', upload.single('image'), (req: Request, res: Response): 
     }
 });
 
-// Nation image upload
 router.post('/nation', upload.single('image'), (req: Request, res: Response): void => {
     try {
+        console.log('Nation image upload request received');
+        console.log('Request body:', req.body);
+        console.log('File info:', req.file ? {
+            filename: req.file.filename,
+            mimetype: req.file.mimetype,
+            size: req.file.size
+        } : 'No file');
+        
         if (!req.file) {
+            console.log('ERROR: No file in request');
             res.status(400).json({ error: 'No file uploaded' });
             return;
         }
@@ -101,4 +141,5 @@ router.post('/nation', upload.single('image'), (req: Request, res: Response): vo
     }
 });
 
+console.log('Upload routes defined: /test, /character, /religion, /nation');
 export default router;
