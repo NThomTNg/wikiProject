@@ -17,3 +17,26 @@ export function getImageUrl(imageURL: string | null | undefined): string | null 
     }
     return imageURL;
 }
+
+/**
+ * Upload an image file to the backend
+ * @param file The image file to upload
+ * @returns Promise with the uploaded image URL
+ */
+export async function uploadImage(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const response = await fetch(`${API_BASE_URL}/api/images/upload`, {
+        method: 'POST',
+        body: formData
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Image upload failed');
+    }
+
+    const data = await response.json();
+    return data.filePath;
+}
