@@ -7,7 +7,7 @@ export const connectDB = async () => {
       if (process.env.DATABASE_URL) {
         // Use environment variables for Azure connection
         config = {
-          server: process.env.DB_SERVER || 'thomstudent.database.windows.net',
+          server: process.env.DB_SERVER || 'thom.database.windows.net',
           database: process.env.DB_NAME || 'FantasyWiki',
           user: process.env.DB_USER || 'thomas',
           password: process.env.DB_PASSWORD || '',
