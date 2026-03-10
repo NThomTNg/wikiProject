@@ -1,6 +1,6 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
 import characterRoutes from './routes/characters';
 import nationRoutes from './routes/nations';
 import locationRoutes from './routes/locations';
@@ -30,8 +30,6 @@ app.use(cors({
 }));
 
 app.use(express.json());
-
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use('/api/characters', characterRoutes);
 app.use('/api/nations', nationRoutes);

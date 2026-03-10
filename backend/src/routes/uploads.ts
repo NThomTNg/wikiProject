@@ -1,46 +1,50 @@
 import express, { Request, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
+import { BlobServiceClient } from '@azure/storage-blob';
 
 console.log('Loading uploads.ts routes...');
 
 const router = express.Router();
 
-// Add test route to verify router is working
-router.get('/test', (req: Request, res: Response) => {
-    res.json({ 
-        message: 'Upload routes are working!', 
-        timestamp: new Date().toISOString(),
-        availableRoutes: ['/character', '/religion', '/nation']
-    });
-});
+// Azure Blob Storage setup
+const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+const containerName = process.env.AZURE_STORAGE_CONTAINER_NAME || 'wiki-images';
 
-const uploadsDir = path.join(__dirname, '../../uploads');
-console.log('Upload directory:', uploadsDir);
-
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-    console.log('Created uploads directory');
+if (!connectionString) {
+    console.error('AZURE_STORAGE_CONNECTION_STRING is not set in environment variables');
 }
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        console.log('Storing file in directory:', uploadsDir);
-        cb(null, uploadsDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const extension = path.extname(file.originalname);
-        const filename = `${file.fieldname}-${uniqueSuffix}${extension}`;
-        console.log('Generated filename:', filename);
-        cb(null, filename);
-    }
-});
+const blobServiceClient = connectionString
+    ? BlobServiceClient.fromConnectionString(connectionString)
+    : null;
 
+async function uploadToBlob(fileBuffer: Buffer, originalName: string, mimeType: string): Promise<string> {
+    if (!blobServiceClient) {
+        throw new Error('Azure Blob Storage is not configured');
+    }
+
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+
+    // Ensure container exists
+    await containerClient.createIfNotExists({ access: 'blob' });
+
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(originalName);
+    const blobName = `image-${uniqueSuffix}${extension}`;
+
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    await blockBlobClient.uploadData(fileBuffer, {
+        blobHTTPHeaders: { blobContentType: mimeType }
+    });
+
+    return blockBlobClient.url;
+}
+
+// Use multer memory storage (keeps file in buffer, no disk write)
 const upload = multer({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 },
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
     fileFilter: (req, file, cb) => {
         console.log('Checking file type:', file.mimetype);
         if (file.mimetype.startsWith('image/')) {
@@ -51,29 +55,34 @@ const upload = multer({
     }
 });
 
-router.post('/character', upload.single('image'), (req: Request, res: Response): void => {
+// Add test route to verify router is working
+router.get('/test', (req: Request, res: Response) => {
+    res.json({
+        message: 'Upload routes are working!',
+        timestamp: new Date().toISOString(),
+        storageType: 'Azure Blob Storage',
+        containerName: containerName,
+        availableRoutes: ['/character', '/religion', '/nation']
+    });
+});
+
+router.post('/character', upload.single('image'), async (req: Request, res: Response): Promise<void> => {
     try {
         console.log('Character image upload request received');
-        console.log('Request body:', req.body);
-        console.log('File info:', req.file ? {
-            filename: req.file.filename,
-            mimetype: req.file.mimetype,
-            size: req.file.size
-        } : 'No file');
-        
+
         if (!req.file) {
             console.log('ERROR: No file in request');
             res.status(400).json({ error: 'No file uploaded' });
             return;
         }
 
-        const filePath = `/uploads/${req.file.filename}`;
-        console.log('Character image uploaded successfully:', filePath);
-        
-        res.json({ 
+        const blobUrl = await uploadToBlob(req.file.buffer, req.file.originalname, req.file.mimetype);
+        console.log('Character image uploaded to blob:', blobUrl);
+
+        res.json({
             message: 'Character image uploaded successfully',
-            filePath: filePath,
-            filename: req.file.filename
+            filePath: blobUrl,
+            filename: req.file.originalname
         });
     } catch (error) {
         console.error('Error uploading character image:', error);
@@ -81,29 +90,23 @@ router.post('/character', upload.single('image'), (req: Request, res: Response):
     }
 });
 
-router.post('/religion', upload.single('image'), (req: Request, res: Response): void => {
+router.post('/religion', upload.single('image'), async (req: Request, res: Response): Promise<void> => {
     try {
         console.log('Religion image upload request received');
-        console.log('Request body:', req.body);
-        console.log('File info:', req.file ? {
-            filename: req.file.filename,
-            mimetype: req.file.mimetype,
-            size: req.file.size
-        } : 'No file');
-        
+
         if (!req.file) {
             console.log('ERROR: No file in request');
             res.status(400).json({ error: 'No file uploaded' });
             return;
         }
 
-        const filePath = `/uploads/${req.file.filename}`;
-        console.log('Religion image uploaded successfully:', filePath);
-        
-        res.json({ 
+        const blobUrl = await uploadToBlob(req.file.buffer, req.file.originalname, req.file.mimetype);
+        console.log('Religion image uploaded to blob:', blobUrl);
+
+        res.json({
             message: 'Religion image uploaded successfully',
-            filePath: filePath,
-            filename: req.file.filename
+            filePath: blobUrl,
+            filename: req.file.originalname
         });
     } catch (error) {
         console.error('Error uploading religion image:', error);
@@ -111,29 +114,23 @@ router.post('/religion', upload.single('image'), (req: Request, res: Response): 
     }
 });
 
-router.post('/nation', upload.single('image'), (req: Request, res: Response): void => {
+router.post('/nation', upload.single('image'), async (req: Request, res: Response): Promise<void> => {
     try {
         console.log('Nation image upload request received');
-        console.log('Request body:', req.body);
-        console.log('File info:', req.file ? {
-            filename: req.file.filename,
-            mimetype: req.file.mimetype,
-            size: req.file.size
-        } : 'No file');
-        
+
         if (!req.file) {
             console.log('ERROR: No file in request');
             res.status(400).json({ error: 'No file uploaded' });
             return;
         }
 
-        const filePath = `/uploads/${req.file.filename}`;
-        console.log('Nation image uploaded successfully:', filePath);
-        
-        res.json({ 
+        const blobUrl = await uploadToBlob(req.file.buffer, req.file.originalname, req.file.mimetype);
+        console.log('Nation image uploaded to blob:', blobUrl);
+
+        res.json({
             message: 'Nation image uploaded successfully',
-            filePath: filePath,
-            filename: req.file.filename
+            filePath: blobUrl,
+            filename: req.file.originalname
         });
     } catch (error) {
         console.error('Error uploading nation image:', error);

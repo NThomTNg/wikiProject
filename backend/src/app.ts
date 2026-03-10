@@ -1,6 +1,6 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
 import characterRoutes from './routes/characters';
 import religionRoutes from './routes/religions';
 import uploadRoutes from './routes/uploads';
@@ -25,8 +25,6 @@ app.use(cors({
 app.options('*', cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use('/api/characters', characterRoutes);
 app.use('/api/religions', religionRoutes);
