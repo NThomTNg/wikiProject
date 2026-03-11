@@ -21,10 +21,18 @@ to add in their own wiki articles, as well as editing and deleting excisting one
 [![Tech](https://skillicons.dev/icons?i=js,ts,svelte,tailwind,vite,nodejs,azure,docker)](https://skillicons.dev)
 <br>
 
-<h2>Implementations for the future</h2>
 
-<ul>
-  <li>Better documentation in the code itself</li>
-  <li>Improvements for UI and general styling</li>
-  <li>More interactive map controls</li>
-</ul>
+## Implementations for the future
+
+This section outlines the current development status and planned features for the project.
+
+### In Progress (Sprint 2)
+
+*   [ ] Set up continuous integration (CI) tests.
+*   [ ] Create a better overall design for the website.
+
+### Planned Features
+
+*   [ ] Register/Login feature.
+*   [ ] Split between admin and normal user.
+*   [ ] Make wikis link to each other.
